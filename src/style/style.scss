@@ -1,18 +1,9 @@
+@use "./home.scss";
+
 body {
-	width: 100%;
-	height: 100%;
+	width: 100vw;
+	height: 100vh;
 	margin: 0;
 	box-sizing: border-box;
 	overflow: hidden;
-}
-
-#background {
-	position: fixed;
-	width: 100%;
-	height: 100%;
-	left: 0;
-	top: 0;
-	z-index: -1;
-	border: none;
-	pointer-events: none;
 }

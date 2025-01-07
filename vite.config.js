@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import path from "path";
+import glsl from "vite-plugin-glsl";
 
 export default defineConfig({
 	base: "/my-cosmos/",
@@ -12,4 +13,5 @@ export default defineConfig({
 		host: "0.0.0.0",
 		port: 5174,
 	},
+	plugins: [glsl()],
 });

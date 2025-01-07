@@ -2,10 +2,8 @@
  * @param {boolean} isError
  * @param {string} message
  */
-export function checkError(isError, message) {
-	if (isError) {
-		throw new Error(message);
-	}
+export function throwError(message) {
+	throw new Error(message);
 }
 
 /**
@@ -14,4 +12,13 @@ export function checkError(isError, message) {
  */
 export function isNull(value) {
 	return value === null;
+}
+
+/**
+ * @param {number} min
+ * @param {number} max
+ * @returns min과 max 사이 랜덤한 수 반환
+ */
+export function randomFloat(min, max) {
+	return Math.random() * (max - min) + min;
 }

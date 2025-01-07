@@ -1,5 +1,5 @@
-import { checkError, isNull } from "./utils";
-import { SCREEN } from "./constants";
+import { throwError, isNull } from "./utils";
+import { SCREEN, ERROR_MSG } from "./constants";
 
 class CanvasOption {
 	/**
@@ -8,14 +8,14 @@ class CanvasOption {
 	 */
 	constructor(canvasId) {
 		this.canvas = document.getElementById(canvasId);
-		checkError(isNull(this.canvas), "캔버스 객체를 발견하지 못했습니다. 다시 확인해주세요.");
+		if (isNull(this.canvas)) throwError(ERROR_MSG.NO_CANVAS);
 		this.gl = this.canvas.getContext("webgl2");
-		checkError(isNull(this.canvas), "WebGL2를 지원하지 않는 브라우저입니다.");
+		if (isNull(this.canvas)) throwError(ERROR_MSG.NO_WEBGL2);
 
-		this.initCanvasOptionVars();
+		this.setCanvasOptionSizeVars();
 	}
 
-	initCanvasOptionVars() {
+	setCanvasOptionSizeVars() {
 		this.dpr = Math.min(Math.round(devicePixelRatio), SCREEN.MAX_DPR) || 1;
 		this.canvasCssWidth = innerWidth;
 		this.canvasCssHeight = innerHeight;

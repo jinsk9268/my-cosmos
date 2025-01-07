@@ -9,14 +9,16 @@ class Canvas extends CanvasOptions {
 		super(canvasId);
 	}
 
-	init() {
-		this.canvas.width = this.canvasCssWidth * this.dpr;
-		this.canvas.height = this.canvasCssHeight * this.dpr;
+	setCanvasSize() {
+		this.setCanvasOptionSizeVars();
+
+		this.gl.canvas.width = this.canvasCssWidth * this.dpr;
+		this.gl.canvas.height = this.canvasCssHeight * this.dpr;
 
 		this.canvas.style.width = `${this.canvasCssWidth}px`;
 		this.canvas.style.height = `${this.canvasCssHeight}px`;
 
-		this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+		this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
 	}
 }
 
