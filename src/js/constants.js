@@ -10,7 +10,7 @@ export const BACKGROUND = {
 	// glsl
 	INTENSITY: 60.0,
 	BASE_SIZE: 1.0,
-	SIZE_OFFSET: 3.0,
+	SIZE_OFFSET: 4.0,
 	BG_R: 0.0,
 	BG_G: 0.0,
 	BG_B: 0.0,

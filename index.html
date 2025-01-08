@@ -3,11 +3,40 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Dongle:wght@300;400&display=swap"
+			rel="stylesheet"
+		/>
 		<title>My Cosmos</title>
 	</head>
 	<body>
 		<iframe id="home-background" src="/my-cosmos/src/home-background/home-background.html"></iframe>
-		<section id="home"></section>
+		<section id="home">
+			<h1>나의 우주</h1>
+			<p>생일과 이름으로 당신의 우주를 경험해보세요.</p>
+			<div id="input-box">
+				<input
+					id="birthday"
+					type="text"
+					inputmode="numeric"
+					autocomplete="off"
+					placeholder="YYYYMMDD (생일)"
+					maxlength="10"
+				/>
+				<input
+					id="name"
+					type="text"
+					autocomplete="off"
+					placeholder="이름을 입력해주세요."
+					maxlength="10"
+				/>
+				<button id="input-complete-btn" disabled aria-label="입력 완료">
+					<span>입력 완료</span>
+				</button>
+			</div>
+		</section>
 
 		<section id="my-cosmos">
 			<canvas id="canvas"></canvas>
