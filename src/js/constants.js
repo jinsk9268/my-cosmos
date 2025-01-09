@@ -1,3 +1,5 @@
+import { rgbToGL } from "./gl/glUtils";
+
 /** 공통 상수 */
 export const SCREEN = {
 	MAX_DPR: 3,
@@ -7,6 +9,7 @@ export const SCREEN = {
 export const BACKGROUND = {
 	// js
 	STAR_QTY: 500,
+	RAIN_STAR_QTY: 200,
 	// glsl
 	INTENSITY: 60.0,
 	BASE_SIZE: 1.0,
@@ -15,6 +18,14 @@ export const BACKGROUND = {
 	BG_G: 0.0,
 	BG_B: 0.0,
 	BG_A: 1.0,
+	BASE_FACTOR: 0.5,
+	TIME_OFFSET: 2.0,
+	STAR_COLOR_1: rgbToGL([159.0, 217.0, 255.0]),
+	STAR_COLOR_2: rgbToGL([0.0, 66.0, 172.0]),
+	STAR_COLOR_3: rgbToGL([225.0, 161.0, 255.0]),
+	MIN_POS: 0.0001,
+	MAX_POS: 0.0005,
+	NEW_Y: 0.5,
 };
 
 /** 에러 메시지 상수 */

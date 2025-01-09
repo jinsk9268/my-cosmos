@@ -1,4 +1,4 @@
-import { throwError } from "@/js/utils.js";
+import { throwError, randomFloat } from "@/js/utils.js";
 
 /**
  *
@@ -47,4 +47,32 @@ export function createProgram(gl, vertexShader, fragmentShader) {
 export function setUniform1f(gl, program, uniformName, uniformValue) {
 	const location = gl.getUniformLocation(program, uniformName);
 	gl.uniform1f(location, uniformValue);
+}
+
+/**
+ * @param {object} param
+ * @param {Float32Array} param.positions
+ * @param {number} param.idx
+ * @param {number} [param.x]
+ * @param {number} [param.y]
+ * @param {number} [param.z]
+ */
+export function setVec3XYZ({
+	positions,
+	idx,
+	x = randomFloat(-1, 1),
+	y = randomFloat(-1, 1),
+	z = randomFloat(-1, 1),
+}) {
+	positions[idx] = x;
+	positions[idx + 1] = y;
+	positions[idx + 2] = z;
+}
+
+/**
+ * @param {number[]} rgb
+ * @returns RGB 컬러를 WebGL 자료형(Float32Array)에 맞게 변환해서 반환
+ */
+export function rgbToGL(rgb) {
+	return new Float32Array(rgb.map((color) => color / 255.0));
 }

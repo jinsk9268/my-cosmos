@@ -2,6 +2,7 @@
 
 in vec3 a_position;
 out float v_brightness;
+
 uniform float u_time;
 uniform float u_intensity;
 uniform float u_base_size;
