@@ -20,6 +20,7 @@ export const BACKGROUND = {
 		rgbToGL([0.0, 0.0, 0.0]),
 	].flat(),
 	AURORA_POS: new Float32Array([-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0]),
+	AURORA_TIME_FACTOR: 0.4,
 	// glsl - star
 	INTENSITY: 60.0,
 	BASE_SIZE: 1.0,

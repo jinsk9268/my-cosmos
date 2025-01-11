@@ -10,15 +10,16 @@ import auroraVertexSource from "@/home-background/shaders/auroraVertexShader.gls
 import auroraFragmentSource from "@/home-background/shaders/auroraFragmentShader.glsl";
 
 const {
-	STATIC_STAR_QTY,
 	MOVING_STAR_HALF_QTY,
+	AURORA_TIME_FACTOR,
+	AURORA_COLORS,
+	AURORA_POS,
+	STATIC_STAR_QTY,
 	STAR_QTY,
 	INTENSITY,
 	BASE_SIZE,
 	SIZE_OFFSET,
 	STAR_COLORS,
-	AURORA_COLORS,
-	AURORA_POS,
 	MIN_POS,
 	MAX_POS,
 	NEW_Y,
@@ -54,6 +55,7 @@ function main() {
 
 	// 오로라 유니폼
 	const auroraUTimeLocation = auroraGL.getUniformLocation("u_time");
+	gl.uniform1f(auroraGL.getUniformLocation("u_time_factor"), AURORA_TIME_FACTOR);
 	gl.uniform3fv(auroraGL.getUniformLocation("u_aurora_colors"), new Float32Array(AURORA_COLORS));
 
 	// 별 ---------------------
