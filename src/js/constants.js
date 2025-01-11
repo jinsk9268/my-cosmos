@@ -6,8 +6,8 @@ export const SCREEN = {
 };
 
 /** 홈 background 관련 상수 */
-const STATIC_STAR_QTY = 400;
-const MOVING_STAR_QTY = 200;
+const STATIC_STAR_QTY = 500;
+const MOVING_STAR_QTY = 300;
 export const BACKGROUND = {
 	// js
 	STATIC_STAR_QTY,
