@@ -39,17 +39,6 @@ export function createProgram(gl, vertexShader, fragmentShader) {
 }
 
 /**
- * @param {WebGL2RenderingContext} gl
- * @param {WebGLProgram} program
- * @param {string} uniformName
- * @param {any} uniformValue
- */
-export function setUniform1f(gl, program, uniformName, uniformValue) {
-	const location = gl.getUniformLocation(program, uniformName);
-	gl.uniform1f(location, uniformValue);
-}
-
-/**
  * @param {object} param
  * @param {Float32Array} param.positions
  * @param {number} param.idx
@@ -74,5 +63,5 @@ export function setVec3XYZ({
  * @returns RGB 컬러를 WebGL 자료형(Float32Array)에 맞게 변환해서 반환
  */
 export function rgbToGL(rgb) {
-	return new Float32Array(rgb.map((color) => color / 255.0));
+	return rgb.map((color) => color / 255.0);
 }

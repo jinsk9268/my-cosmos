@@ -6,25 +6,31 @@ export const SCREEN = {
 };
 
 /** 홈 background 관련 상수 */
+const STATIC_STAR_QTY = 400;
+const MOVING_STAR_QTY = 200;
 export const BACKGROUND = {
 	// js
-	STAR_QTY: 500,
-	RAIN_STAR_QTY: 200,
-	// glsl
+	STATIC_STAR_QTY,
+	MOVING_STAR_HALF_QTY: STATIC_STAR_QTY + MOVING_STAR_QTY / 2,
+	STAR_QTY: STATIC_STAR_QTY + MOVING_STAR_QTY,
+	// glsl - aurora
+	AURORA_COLORS: [
+		rgbToGL([91.0, 72.0, 145.0]),
+		rgbToGL([0.0, 66.0, 172.0]),
+		rgbToGL([0.0, 0.0, 0.0]),
+	].flat(),
+	AURORA_POS: new Float32Array([-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0]),
+	// glsl - star
 	INTENSITY: 60.0,
 	BASE_SIZE: 1.0,
-	SIZE_OFFSET: 4.0,
-	BG_R: 0.0,
-	BG_G: 0.0,
-	BG_B: 0.0,
-	BG_A: 1.0,
-	BASE_FACTOR: 0.5,
-	TIME_OFFSET: 2.0,
-	STAR_COLOR_1: rgbToGL([159.0, 217.0, 255.0]),
-	STAR_COLOR_2: rgbToGL([0.0, 66.0, 172.0]),
-	STAR_COLOR_3: rgbToGL([225.0, 161.0, 255.0]),
+	SIZE_OFFSET: 3.0,
+	STAR_COLORS: [
+		rgbToGL([225.0, 255.0, 255.0]),
+		rgbToGL([159.0, 217.0, 255.0]),
+		rgbToGL([225.0, 161.0, 255.0]),
+	].flat(),
 	MIN_POS: 0.0001,
-	MAX_POS: 0.0005,
+	MAX_POS: 0.0003,
 	NEW_Y: 0.5,
 };
 

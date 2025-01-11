@@ -1,26 +1,24 @@
 import "@/style/style.scss";
 import Canvas from "@/js/Canvas.js";
+import GLPipeline from "@/js/gl/GLPipeline.js";
 import { BACKGROUND } from "@/js/constants.js";
 import { randomFloat } from "@/js/utils.js";
-import { createShader, createProgram, setUniform1f, setVec3XYZ } from "@/js/gl/glUtils.js";
-import vertexSource from "@/home-background/shaders/vertexShader.glsl";
-import fragmentSource from "@/home-background/shaders/fragmentShader.glsl";
+import { setVec3XYZ } from "@/js/gl/glUtils.js";
+import starVertexSource from "@/home-background/shaders/starVertexShader.glsl";
+import starFragmentSource from "@/home-background/shaders/starFragmentShader.glsl";
+import auroraVertexSource from "@/home-background/shaders/auroraVertexShader.glsl";
+import auroraFragmentSource from "@/home-background/shaders/auroraFragmentShader.glsl";
 
 const {
+	STATIC_STAR_QTY,
+	MOVING_STAR_HALF_QTY,
 	STAR_QTY,
-	RAIN_STAR_QTY,
 	INTENSITY,
 	BASE_SIZE,
 	SIZE_OFFSET,
-	BG_R,
-	BG_G,
-	BG_B,
-	BG_A,
-	BASE_FACTOR,
-	TIME_OFFSET,
-	STAR_COLOR_1,
-	STAR_COLOR_2,
-	STAR_COLOR_3,
+	STAR_COLORS,
+	AURORA_COLORS,
+	AURORA_POS,
 	MIN_POS,
 	MAX_POS,
 	NEW_Y,
@@ -29,74 +27,83 @@ const {
 const canvas = new Canvas("bg_canvas");
 canvas.setCanvasSize();
 
+function handleResize() {
+	canvas.setCanvasSize();
+}
+window.addEventListener("resize", handleResize);
+
 main();
 
 function main() {
 	const gl = canvas.gl;
 
-	const positions = new Float32Array((STAR_QTY + RAIN_STAR_QTY) * 3);
-	const rainStarTopEnd = STAR_QTY + RAIN_STAR_QTY / 2;
-	const rainStarBottomEnd = STAR_QTY + RAIN_STAR_QTY;
+	// 오로라 ---------------------
+	const auroraGL = new GLPipeline(gl, auroraVertexSource, auroraFragmentSource);
+	auroraGL.useProgram();
 
-	for (let i = 0; i < STAR_QTY; i++) {
-		setVec3XYZ({ positions, idx: i * 3 });
-	}
-	for (let i = STAR_QTY; i < rainStarTopEnd; i++) {
-		setVec3XYZ({ positions, idx: i * 3, y: Math.random() });
-	}
-	for (let i = rainStarTopEnd; i < rainStarBottomEnd; i++) {
-		setVec3XYZ({ positions, idx: i * 3, y: randomFloat(-1, 0) });
-	}
+	// 오로라 버퍼 생성
+	auroraGL.createBuffer(AURORA_POS);
 
-	const vertexShader = createShader(gl, vertexSource, gl.VERTEX_SHADER);
-	const fragmentShader = createShader(gl, fragmentSource, gl.FRAGMENT_SHADER);
-	const program = createProgram(gl, vertexShader, fragmentShader);
+	// 오로라 vertexArray 생성
+	const auroraPositionLocation = auroraGL.getAttribLocation("a_position");
+	const auroraPositionArray = auroraGL.createVertexArray({
+		location: auroraPositionLocation,
+		size: 2,
+		type: gl.FLOAT,
+	});
 
-	gl.useProgram(program);
-	const aPositionLocation = gl.getAttribLocation(program, "a_position");
+	// 오로라 유니폼
+	const auroraUTimeLocation = auroraGL.getUniformLocation("u_time");
+	gl.uniform3fv(auroraGL.getUniformLocation("u_aurora_colors"), new Float32Array(AURORA_COLORS));
 
-	const positionBuffer = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-	gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
+	// 별 ---------------------
+	const starGL = new GLPipeline(gl, starVertexSource, starFragmentSource);
+	starGL.useProgram();
 
-	const positionArray = gl.createVertexArray();
-	gl.bindVertexArray(positionArray);
-	gl.enableVertexAttribArray(aPositionLocation);
-	gl.vertexAttribPointer(aPositionLocation, 3, gl.FLOAT, false, 0, 0);
+	// 별 버퍼 생성
+	const starPosition = getStarPosition();
+	const starPositionBuffer = starGL.createBuffer(starPosition);
 
-	setUniform1f(gl, program, "u_intensity", INTENSITY);
-	setUniform1f(gl, program, "u_base_size", BASE_SIZE);
-	setUniform1f(gl, program, "u_size_offset", SIZE_OFFSET);
-	const uFactor1Location = gl.getUniformLocation(program, "u_factor_1");
-	const uFactor2Location = gl.getUniformLocation(program, "u_factor_2");
-	const uColorLocation = gl.getUniformLocation(program, "u_color");
+	// 별 vertexArray 생성
+	const starPositionLocation = starGL.getAttribLocation("a_position");
+	const starPositionArray = starGL.createVertexArray({
+		location: starPositionLocation,
+		size: 3,
+		type: gl.FLOAT,
+	});
+
+	// 별 유니폼
+	const starUTimeLocation = starGL.getUniformLocation("u_time");
+	gl.uniform1f(starGL.getUniformLocation("u_intensity"), INTENSITY);
+	gl.uniform1f(starGL.getUniformLocation("u_base_size"), BASE_SIZE);
+	gl.uniform1f(starGL.getUniformLocation("u_size_offset"), SIZE_OFFSET);
+	gl.uniform3fv(starGL.getUniformLocation("u_color"), STAR_COLORS);
 
 	function render(time) {
 		const uTime = time * 0.001;
-		gl.uniform1f(uFactor1Location, BASE_FACTOR + BASE_FACTOR * Math.sin(uTime));
-		gl.uniform1f(uFactor2Location, BASE_FACTOR + BASE_FACTOR * Math.sin(uTime + TIME_OFFSET));
-		gl.uniform3fv(
-			uColorLocation,
-			new Float32Array([...STAR_COLOR_1, ...STAR_COLOR_2, ...STAR_COLOR_3]),
-		);
 
-		gl.clearColor(BG_R, BG_G, BG_B, BG_A);
-		gl.clear(gl.COLOR_BUFFER_BIT);
+		// 오로라 렌더링
+		auroraGL.useProgram();
+		gl.uniform1f(auroraUTimeLocation, uTime);
 
-		for (let i = STAR_QTY; i < rainStarBottomEnd; i++) {
-			const idx = i * 3;
-			positions[idx] -= randomFloat(MIN_POS, MAX_POS);
-			positions[idx + 1] -= randomFloat(MIN_POS, MAX_POS);
+		auroraGL.bindAndDrawArrays({
+			vertexArray: auroraPositionArray,
+			module: gl.TRIANGLE_STRIP,
+			count: 4,
+		});
 
-			if (positions[idx] < -1 || positions[idx + 1] < -1) {
-				setVec3XYZ({ positions, idx, y: randomFloat(NEW_Y, 1) });
-			}
-		}
-		gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-		gl.bufferSubData(gl.ARRAY_BUFFER, 0, positions);
+		// 별 렌더링
+		starGL.useProgram();
+		gl.uniform1f(starUTimeLocation, uTime);
 
-		gl.bindVertexArray(positionArray);
-		gl.drawArrays(gl.POINTS, 0, STAR_QTY + RAIN_STAR_QTY);
+		updateStarPosition(starPosition);
+		auroraGL.bindBufferSubData(starPositionBuffer, 0, starPosition);
+
+		auroraGL.bindAndDrawArrays({
+			vertexArray: starPositionArray,
+			module: gl.POINTS,
+			count: STAR_QTY,
+		});
 
 		requestAnimationFrame(render);
 	}
@@ -104,7 +111,31 @@ function main() {
 	requestAnimationFrame(render);
 }
 
-function handleResize() {
-	canvas.setCanvasSize();
+function getStarPosition() {
+	const positions = new Float32Array(STAR_QTY * 3);
+
+	for (let i = 0; i < STATIC_STAR_QTY; i++) {
+		setVec3XYZ({ positions, idx: i * 3 });
+	}
+	for (let i = STATIC_STAR_QTY; i < MOVING_STAR_HALF_QTY; i++) {
+		setVec3XYZ({ positions, idx: i * 3, y: Math.random() });
+	}
+	for (let i = MOVING_STAR_HALF_QTY; i < STAR_QTY; i++) {
+		setVec3XYZ({ positions, idx: i * 3, y: randomFloat(-1, 0) });
+	}
+
+	return positions;
 }
-window.addEventListener("resize", handleResize);
+
+function updateStarPosition(starPosition) {
+	for (let i = STATIC_STAR_QTY; i < STAR_QTY; i++) {
+		const idx = i * 3;
+
+		if (starPosition[idx] < -1 || starPosition[idx + 1] < -1) {
+			setVec3XYZ({ positions: starPosition, idx, y: randomFloat(NEW_Y, 1) });
+		} else {
+			starPosition[idx] -= randomFloat(MIN_POS, MAX_POS);
+			starPosition[idx + 1] -= randomFloat(MIN_POS, MAX_POS);
+		}
+	}
+}
