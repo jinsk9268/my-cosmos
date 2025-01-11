@@ -76,10 +76,10 @@
 		margin: 1rem 0;
 		@include borderless-radius;
 		box-shadow:
-			0 0 5px rgba(white, 0.5),
-			0 0 15px rgba($light-blue, 0.5),
-			0 0 30px rgba($light-puple, 0.5),
-			0 0 40px rgba($deep-blue, 0.8);
+			0 0 5px rgba(white, 0.8),
+			0 0 10px rgba($light-blue, 0.8),
+			0 0 15px rgba($light-puple, 0.8),
+			0 0 20px rgba($deep-blue, 0.8);
 		@include text-gradient(white, $light-blue, $light-puple);
 		text-align: center;
 		@include dongle-font;
