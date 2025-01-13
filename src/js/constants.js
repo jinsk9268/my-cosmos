@@ -1,19 +1,23 @@
 import { rgbToGL } from "./gl/glUtils";
 
-/** 공통 상수 */
+// 공통 상수 ---------------------
 export const SCREEN = {
 	MAX_DPR: 3,
 };
 
-/** 홈 background 관련 상수 */
+// Hash 관련 상수 ---------------------
+const MY_COSMOS = "my-cosmos";
+export const LOCATION_HASH = {
+	HOME: "home",
+	MY_COSMOS,
+	HASH_MY_COSMOS: `#${MY_COSMOS}`,
+};
+
+// 홈 background 관련 상수 ---------------------
 const STATIC_STAR_QTY = 500;
 const MOVING_STAR_QTY = 300;
 export const BACKGROUND = {
-	// js
-	STATIC_STAR_QTY,
-	MOVING_STAR_HALF_QTY: STATIC_STAR_QTY + MOVING_STAR_QTY / 2,
-	STAR_QTY: STATIC_STAR_QTY + MOVING_STAR_QTY,
-	// glsl - aurora
+	// aurora
 	AURORA_COLORS: [
 		rgbToGL([91.0, 72.0, 145.0]),
 		rgbToGL([0.0, 66.0, 172.0]),
@@ -21,7 +25,10 @@ export const BACKGROUND = {
 	].flat(),
 	AURORA_POS: new Float32Array([-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0]),
 	AURORA_TIME_FACTOR: 0.4,
-	// glsl - star
+	// star
+	STATIC_STAR_QTY,
+	MOVING_STAR_HALF_QTY: STATIC_STAR_QTY + MOVING_STAR_QTY / 2,
+	STAR_QTY: STATIC_STAR_QTY + MOVING_STAR_QTY,
 	INTENSITY: 60.0,
 	BASE_SIZE: 1.0,
 	SIZE_OFFSET: 3.0,
@@ -35,8 +42,15 @@ export const BACKGROUND = {
 	NEW_Y: 0.5,
 };
 
-/** 에러 메시지 상수 */
+// 에러 메시지 상수 ---------------------
 export const ERROR_MSG = {
 	NO_CANVAS: "캔버스 객체를 발견하지 못했습니다. 다시 확인해주세요.",
 	NO_WEBGL2: "WebGL2를 지원하지 않는 브라우저입니다.",
+	NO_NAME: "1~10 글자의 이름 또는 닉네임을 입력해주세요.",
+};
+
+// 메시지 상수 ---------------------
+export const MSG = {
+	CANCLE_BG_ANIMATION: "홈 배경 애니메이션 중지",
+	START_BG_ANIMATION: "홈 배경 애니메이션 시작",
 };
