@@ -6,34 +6,35 @@
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
-			href="https://fonts.googleapis.com/css2?family=Dongle:wght@300;400&display=swap"
+			href="https://fonts.googleapis.com/css2?family=Dongle:wght@300;400;700&display=swap"
 			rel="stylesheet"
 		/>
 		<title>My Cosmos</title>
 	</head>
-	<body>
-		<iframe id="home-background" src="/my-cosmos/src/home-background/home-background.html"></iframe>
+	<body style="visibility: hidden">
 		<section id="home">
+			<iframe
+				id="home-background"
+				src="/my-cosmos/src/home-background/home-background.html"
+			></iframe>
 			<h1>나의 우주</h1>
-			<p>생일과 이름으로 당신의 우주를 경험해보세요.</p>
-			<div id="input-box">
-				<input
-					id="birthday"
-					type="text"
-					inputmode="numeric"
-					autocomplete="off"
-					placeholder="YYYYMMDD (생일)"
-					maxlength="10"
-				/>
+			<p>당신의 이름으로 펼쳐진 우주를 느껴보세요.</p>
+			<div id="info-box">
+				<label for="name">
+					이름, 닉네임 등 원하는걸 입력해보세요!
+					<span>1~10 글자까지 입력 가능합니다.</span>
+				</label>
 				<input
 					id="name"
 					type="text"
+					neme="name"
 					autocomplete="off"
-					placeholder="이름을 입력해주세요."
+					placeholder="(ex) 길동, 홍길동, 귀요미 등..."
 					maxlength="10"
+					size="20"
 				/>
 				<button id="input-complete-btn" disabled aria-label="입력 완료">
-					<span>입력 완료</span>
+					<span>경험하기</span>
 				</button>
 			</div>
 		</section>

@@ -1,12 +1,17 @@
-@use "./home.scss";
 @use "./util.scss" as *;
+@use "./home.scss";
 
-body {
-	width: 100vw;
-	height: 100vh;
+* {
+	padding: 0;
 	margin: 0;
 	box-sizing: border-box;
+	font-family: "Dongle";
+}
+
+body {
+	visibility: hidden;
+	width: 100vw;
+	height: 100vh;
 	overflow: hidden;
-	@include dongle-font;
-	font-weight: 300;
+	background: black;
 }

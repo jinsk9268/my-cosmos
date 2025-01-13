@@ -2,12 +2,9 @@
 $light-blue: #9fd9ff;
 $deep-blue: #0042ac;
 $light-puple: #e1a1ff;
+$gradient-base: white, $light-blue, $light-puple;
 
 // mixin
-@mixin dongle-font {
-	font-family: "Dongle", serif;
-}
-
 @mixin flex-column-center {
 	display: flex;
 	flex-direction: column;
