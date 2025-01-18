@@ -10,16 +10,13 @@ import auroraVertexSource from "@/home-background/shaders/auroraVertexShader.gls
 import auroraFragmentSource from "@/home-background/shaders/auroraFragmentShader.glsl";
 
 const {
-	MOVING_STAR_HALF_QTY,
-	AURORA_TIME_FACTOR,
-	AURORA_COLORS,
 	AURORA_POS,
+	AURORA_UNIFORMS,
+	MOVING_STAR_HALF_QTY,
 	STATIC_STAR_QTY,
 	STAR_QTY,
-	INTENSITY,
-	BASE_SIZE,
-	SIZE_OFFSET,
-	STAR_COLORS,
+	STAR_UNIFORMS_V,
+	STAR_UNIFORMS_F,
 	MIN_POS,
 	MAX_POS,
 	NEW_Y,
@@ -47,8 +44,7 @@ const auroraPositionArray = auroraGL.createVertexArray({
 
 // 오로라 유니폼
 const auroraUTimeLocation = auroraGL.getUniformLocation("u_time");
-gl.uniform1f(auroraGL.getUniformLocation("u_time_factor"), AURORA_TIME_FACTOR);
-gl.uniform3fv(auroraGL.getUniformLocation("u_aurora_colors"), new Float32Array(AURORA_COLORS));
+auroraGL.sendUniformStruct("u_aurora", AURORA_UNIFORMS);
 
 // 별 ---------------------
 const starGL = new GLPipeline(gl, starVertexSource, starFragmentSource);
@@ -78,12 +74,10 @@ const starPositionArray = starGL.createVertexArray({
 
 // 별 유니폼 ---------------------
 const starUTimeLocation = starGL.getUniformLocation("u_time");
-gl.uniform1f(starGL.getUniformLocation("u_intensity"), INTENSITY);
-gl.uniform1f(starGL.getUniformLocation("u_base_size"), BASE_SIZE);
-gl.uniform1f(starGL.getUniformLocation("u_size_offset"), SIZE_OFFSET);
-gl.uniform3fv(starGL.getUniformLocation("u_color"), STAR_COLORS);
+starGL.sendUniformStruct("u_star_v", STAR_UNIFORMS_V);
+starGL.sendUniformStruct("u_star_f", STAR_UNIFORMS_F);
 
-// 애니메이션
+// 애니메이션 ---------------------
 let animationId = null;
 function renderBackground() {
 	function frame(time) {

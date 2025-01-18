@@ -1,4 +1,12 @@
-import { createShader, createProgram } from "./glUtils";
+import { throwError, isNull } from "../utils";
+import {
+	createShader,
+	createProgram,
+	getUniformType,
+	numArrToF32Arr,
+	isMultiDemensionArr,
+} from "./glUtils";
+import { ERROR_MSG } from "@/js/constants.js";
 
 class GLPipeline {
 	/**
@@ -32,6 +40,26 @@ class GLPipeline {
 	 */
 	getUniformLocation(name) {
 		return this.gl.getUniformLocation(this.program, name);
+	}
+
+	/**
+	 * @param {string} name
+	 * @param {Object} [struct]
+	 */
+	sendUniformStruct(name, struct = {}) {
+		Object.entries(struct).forEach(([key, value]) => {
+			const type = getUniformType(value);
+
+			if (isNull(type)) throwError(`${key} ${ERROR_MSG.NO_TYPE}`);
+
+			if (isMultiDemensionArr(value)) {
+				const flatArr = value.flat();
+				const arrHasFloat = flatArr.some((num) => !Number.isInteger(num));
+				value = arrHasFloat ? numArrToF32Arr(flatArr) : flatArr;
+			}
+
+			this.gl[type](this.getUniformLocation(`${name}.${key}`), value);
+		});
 	}
 
 	/**

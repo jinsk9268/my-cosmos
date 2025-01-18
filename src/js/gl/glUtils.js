@@ -1,4 +1,5 @@
 import { throwError, randomFloat } from "@/js/utils.js";
+import { UNIFORM_TYPE } from "@/js/constants.js";
 
 /**
  *
@@ -59,9 +60,48 @@ export function setVec3XYZ({
 }
 
 /**
- * @param {number[]} rgb
- * @returns RGB 컬러를 WebGL 자료형(Float32Array)에 맞게 변환해서 반환
+ * @param {number[]} arr
+ * @returns {Float32Array} WebGL에 전달하기 위해 number 배열의 타입을 Float32Array로 변환해 반환
  */
-export function rgbToGL(rgb) {
-	return rgb.map((color) => color / 255.0);
+export function numArrToF32Arr(arr = []) {
+	return new Float32Array(arr);
+}
+
+/**
+ * @param {number[]} rgb
+ * @returns {number[]} RGB 컬러를 WebGL 자료형(Float32Array)에 맞게 변환해서 반환
+ */
+export function rgbToGLRgb(rgb) {
+	return rgb.map((color) => color / 255);
+}
+
+/**
+ * @param {any} value
+ * @returns {boolean} 파라미터가 다차원 배열이면 true 반환, 아니면 false 반환
+ */
+export function isMultiDemensionArr(value) {
+	return Array.isArray(value) && Array.isArray(value[0]);
+}
+
+/**
+ * @param {number | Float32Array} value
+ * @returns {string} glsl uniform 자료형 반환, 없는 경우 null 반환
+ */
+export function getUniformType(value) {
+	const { UNIFORM_1_F, UNIFORM_2_FV, UNIFORM_3_FV, UNIFORM_4_FV, UNIFORM_1_I } = UNIFORM_TYPE;
+	let type = null;
+
+	if (typeof value === "number") {
+		return Number.isInteger(value) ? UNIFORM_1_I : UNIFORM_1_F;
+	}
+
+	if (Array.isArray(value) || value.constructor === Float32Array) {
+		const length = value.length;
+
+		if (length === 2) return UNIFORM_2_FV;
+		if (length === 3) return UNIFORM_3_FV;
+		if (length === 4) return UNIFORM_4_FV;
+	}
+
+	return type;
 }
