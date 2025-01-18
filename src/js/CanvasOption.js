@@ -1,5 +1,5 @@
 import { throwError, isNull } from "./utils";
-import { SCREEN, ERROR_MSG } from "./constants";
+import { SCREEN, ANIMATION, ERROR_MSG } from "./constants";
 
 class CanvasOption {
 	/**
@@ -12,6 +12,8 @@ class CanvasOption {
 		this.gl = this.canvas.getContext("webgl2");
 		if (isNull(this.canvas)) throwError(ERROR_MSG.NO_WEBGL2);
 
+		this.fps = ANIMATION.FPS;
+		this.interval = 1000 / this.fps;
 		this.setCanvasOptionSizeVars();
 	}
 

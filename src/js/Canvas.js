@@ -7,6 +7,8 @@ class Canvas extends CanvasOptions {
 	 */
 	constructor(canvasId) {
 		super(canvasId);
+
+		this.animationId = null;
 	}
 
 	setCanvasSize() {

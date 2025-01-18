@@ -5,6 +5,10 @@ export const SCREEN = {
 	MAX_DPR: 3,
 };
 
+export const ANIMATION = {
+	FPS: 60,
+};
+
 // Hash 관련 상수 ---------------------
 const MY_COSMOS = "my-cosmos";
 export const LOCATION_HASH = {
@@ -36,7 +40,7 @@ export const BACKGROUND = {
 		weight_time_speed: 0.75,
 		weight_min: 0.2,
 		weight_max: 0.6,
-		color_alpha: 0.9,
+		color_alpha: 0.94,
 	},
 	// star
 	STATIC_STAR_QTY,

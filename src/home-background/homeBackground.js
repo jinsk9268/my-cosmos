@@ -78,46 +78,59 @@ starGL.sendUniformStruct("u_star_v", STAR_UNIFORMS_V);
 starGL.sendUniformStruct("u_star_f", STAR_UNIFORMS_F);
 
 // 애니메이션 ---------------------
-let animationId = null;
-function renderBackground() {
-	function frame(time) {
-		const uTime = time * 0.001;
+// 오로라 render
+function renderAurora(uTime) {
+	auroraGL.useProgram();
+	gl.uniform1f(auroraUTimeLocation, uTime);
 
-		// 오로라 렌더링
-		auroraGL.useProgram();
-		gl.uniform1f(auroraUTimeLocation, uTime);
+	auroraGL.bindAndDrawArrays({
+		vertexArray: auroraPositionArray,
+		module: gl.TRIANGLE_STRIP,
+		count: 4,
+	});
+}
 
-		auroraGL.bindAndDrawArrays({
-			vertexArray: auroraPositionArray,
-			module: gl.TRIANGLE_STRIP,
-			count: 4,
-		});
+// 별 render
+function renderStar(uTime) {
+	starGL.useProgram();
+	gl.uniform1f(starUTimeLocation, uTime);
 
-		// 별 렌더링
-		starGL.useProgram();
-		gl.uniform1f(starUTimeLocation, uTime);
+	for (let i = STATIC_STAR_QTY; i < STAR_QTY; i++) {
+		const idx = i * 3;
 
-		for (let i = STATIC_STAR_QTY; i < STAR_QTY; i++) {
-			const idx = i * 3;
-
-			if (starPosition[idx] < -1 || starPosition[idx + 1] < -1) {
-				setVec3XYZ({ positions: starPosition, idx, y: randomFloat(NEW_Y, 1) });
-			}
-			starPosition[idx] -= randomFloat(MIN_POS, MAX_POS);
-			starPosition[idx + 1] -= randomFloat(MIN_POS, MAX_POS);
+		if (starPosition[idx] < -1 || starPosition[idx + 1] < -1) {
+			setVec3XYZ({ positions: starPosition, idx, y: randomFloat(NEW_Y, 1) });
 		}
-
-		starGL.bindBufferSubData(starPositionBuffer, 0, starPosition);
-		starGL.bindAndDrawArrays({
-			vertexArray: starPositionArray,
-			module: gl.POINTS,
-			count: STAR_QTY,
-		});
-
-		animationId = requestAnimationFrame(frame);
+		starPosition[idx] -= randomFloat(MIN_POS, MAX_POS);
+		starPosition[idx + 1] -= randomFloat(MIN_POS, MAX_POS);
 	}
 
-	animationId = requestAnimationFrame(frame);
+	starGL.bindBufferSubData(starPositionBuffer, 0, starPosition);
+	starGL.bindAndDrawArrays({
+		vertexArray: starPositionArray,
+		module: gl.POINTS,
+		count: STAR_QTY,
+	});
+}
+
+// 배경화면 render
+let then = document.timeline.currentTime;
+function renderBackground() {
+	function frame(now) {
+		const delta = now - then;
+
+		if (delta >= canvas.interval) {
+			const uTime = now * 0.001; // ms -> sec로 변환하여 GLSL 사용
+			renderAurora(uTime);
+			renderStar(uTime);
+
+			then = now - (delta % canvas.interval);
+		}
+
+		canvas.animationId = requestAnimationFrame(frame);
+	}
+
+	canvas.animationId = requestAnimationFrame(frame);
 }
 
 // 이벤트 리스너 ---------------------
@@ -133,18 +146,18 @@ function handleResize() {
  * @param {MessageEvent} e
  */
 function handleMessage(e) {
-	if (e.data === MSG.CANCLE_BG_ANIMATION && !isNull(animationId)) {
-		cancelAnimationFrame(animationId);
-		animationId = null;
+	if (e.data === MSG.CANCLE_BG_ANIMATION && !isNull(canvas.animationId)) {
+		cancelAnimationFrame(canvas.animationId);
+		canvas.animationId = null;
 	}
-	if (e.data === MSG.START_BG_ANIMATION && isNull(animationId)) {
+	if (e.data === MSG.START_BG_ANIMATION && isNull(canvas.animationId)) {
 		renderBackground();
 	}
 }
 
 // 실행 ---------------------
-renderBackground();
 window.addEventListener("DOMContentLoaded", handleLoad);
 window.addEventListener("load", handleLoad);
 window.addEventListener("resize", handleResize);
 window.addEventListener("message", (e) => handleMessage(e));
+renderBackground();
