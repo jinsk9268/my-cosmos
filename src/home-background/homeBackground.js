@@ -2,25 +2,13 @@ import "@/style/style.scss";
 import Canvas from "@/js/Canvas.js";
 import GLPipeline from "@/js/gl/GLPipeline.js";
 import { BACKGROUND, MSG } from "@/js/constants.js";
-import { randomFloat, isNull } from "@/js/utils.js";
-import { setVec3XYZ } from "@/js/gl/glUtils.js";
+import { isNull, randomFloat } from "@/js/utils.js";
 import starVertexSource from "@/home-background/shaders/starVertexShader.glsl";
 import starFragmentSource from "@/home-background/shaders/starFragmentShader.glsl";
 import auroraVertexSource from "@/home-background/shaders/auroraVertexShader.glsl";
 import auroraFragmentSource from "@/home-background/shaders/auroraFragmentShader.glsl";
 
-const {
-	AURORA_POS,
-	AURORA_UNIFORMS,
-	MOVING_STAR_HALF_QTY,
-	STATIC_STAR_QTY,
-	STAR_QTY,
-	STAR_UNIFORMS_V,
-	STAR_UNIFORMS_F,
-	MIN_POS,
-	MAX_POS,
-	NEW_Y,
-} = BACKGROUND;
+const { AURORA, STAR } = BACKGROUND;
 
 // Canvas ---------------------
 const canvas = new Canvas("bg_canvas");
@@ -32,7 +20,7 @@ const auroraGL = new GLPipeline(gl, auroraVertexSource, auroraFragmentSource);
 auroraGL.useProgram();
 
 // 오로라 버퍼 생성
-auroraGL.createBuffer(AURORA_POS);
+auroraGL.createBuffer(AURORA.POS);
 
 // 오로라 vertexArray 생성
 const auroraPositionLocation = auroraGL.getAttribLocation("a_position");
@@ -44,22 +32,25 @@ const auroraPositionArray = auroraGL.createVertexArray({
 
 // 오로라 유니폼
 const auroraUTimeLocation = auroraGL.getUniformLocation("u_time");
-auroraGL.sendUniformStruct("u_aurora", AURORA_UNIFORMS);
+auroraGL.sendUniformStruct("u_aurora", AURORA.UNIFORMS);
 
 // 별 ---------------------
 const starGL = new GLPipeline(gl, starVertexSource, starFragmentSource);
 starGL.useProgram();
 
-// 별 버퍼 생성
-const starPosition = new Float32Array(STAR_QTY * 3);
-for (let i = 0; i < STATIC_STAR_QTY; i++) {
-	setVec3XYZ({ positions: starPosition, idx: i * 3 });
-}
-for (let i = STATIC_STAR_QTY; i < MOVING_STAR_HALF_QTY; i++) {
-	setVec3XYZ({ positions: starPosition, idx: i * 3, y: Math.random() });
-}
-for (let i = MOVING_STAR_HALF_QTY; i < STAR_QTY; i++) {
-	setVec3XYZ({ positions: starPosition, idx: i * 3, y: randomFloat(-1, 0) });
+// 별 버퍼 생성 (포지션은 페르마 양방향 나선 기반)
+const starPosition = new Float32Array(STAR.QTY * 3);
+for (let i = 0; i < STAR.QTY; i++) {
+	const idx = i * 3;
+
+	const theta = i * STAR.THETA_RATIO * (i % 2 === 0 ? 1 : -1);
+	const radius = Math.sqrt(Math.abs(theta));
+	const normalizedRadius = (radius - STAR.RADIUS_MIN) / (STAR.RADIUS_MAX - STAR.RADIUS_MIN);
+	const scaledRadius = normalizedRadius * STAR.SADIUS_SCALE;
+
+	starPosition[idx] = scaledRadius * Math.cos(theta); // x
+	starPosition[idx + 1] = scaledRadius * Math.sin(theta); // y
+	starPosition[idx + 2] = randomFloat(-1, 1); // z
 }
 
 const starPositionBuffer = starGL.createBuffer(starPosition);
@@ -74,8 +65,8 @@ const starPositionArray = starGL.createVertexArray({
 
 // 별 유니폼 ---------------------
 const starUTimeLocation = starGL.getUniformLocation("u_time");
-starGL.sendUniformStruct("u_star_v", STAR_UNIFORMS_V);
-starGL.sendUniformStruct("u_star_f", STAR_UNIFORMS_F);
+starGL.sendUniformStruct("u_star_v", STAR.UNIFORMS_V);
+starGL.sendUniformStruct("u_star_f", STAR.UNIFORMS_F);
 
 // 애니메이션 ---------------------
 // 오로라 render
@@ -95,21 +86,11 @@ function renderStar(uTime) {
 	starGL.useProgram();
 	gl.uniform1f(starUTimeLocation, uTime);
 
-	for (let i = STATIC_STAR_QTY; i < STAR_QTY; i++) {
-		const idx = i * 3;
-
-		if (starPosition[idx] < -1 || starPosition[idx + 1] < -1) {
-			setVec3XYZ({ positions: starPosition, idx, y: randomFloat(NEW_Y, 1) });
-		}
-		starPosition[idx] -= randomFloat(MIN_POS, MAX_POS);
-		starPosition[idx + 1] -= randomFloat(MIN_POS, MAX_POS);
-	}
-
 	starGL.bindBufferSubData(starPositionBuffer, 0, starPosition);
 	starGL.bindAndDrawArrays({
 		vertexArray: starPositionArray,
 		module: gl.POINTS,
-		count: STAR_QTY,
+		count: STAR.QTY,
 	});
 }
 

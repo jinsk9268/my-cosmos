@@ -1,4 +1,4 @@
-import { throwError, randomFloat } from "@/js/utils.js";
+import { throwError } from "@/js/utils.js";
 import { UNIFORM_TYPE } from "@/js/constants.js";
 
 /**
@@ -37,26 +37,6 @@ export function createProgram(gl, vertexShader, fragmentShader) {
 	const errorMsg = gl.getProgramInfoLog(program);
 	gl.deleteProgram(program);
 	throwError(errorMsg);
-}
-
-/**
- * @param {object} param
- * @param {Float32Array} param.positions
- * @param {number} param.idx
- * @param {number} [param.x]
- * @param {number} [param.y]
- * @param {number} [param.z]
- */
-export function setVec3XYZ({
-	positions,
-	idx,
-	x = randomFloat(-1, 1),
-	y = randomFloat(-1, 1),
-	z = randomFloat(-1, 1),
-}) {
-	positions[idx] = x;
-	positions[idx + 1] = y;
-	positions[idx + 2] = z;
 }
 
 /**

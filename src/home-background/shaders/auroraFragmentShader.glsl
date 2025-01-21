@@ -24,7 +24,7 @@ uniform settings u_aurora;
 void main() {
   vec4 color = v_color;
   color.y = 0.0;
-  color = sin(color) * u_aurora.color_min + u_aurora.color_max;
+  color = asin(color) * u_aurora.color_min + u_aurora.color_max;
 
   vec4 base = u_aurora.base;
   float weight = smoothstep(float(u_aurora.smooth_min), float(u_aurora.smooth_max), v_color.y);
