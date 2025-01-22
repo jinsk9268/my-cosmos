@@ -23,6 +23,11 @@ $gradient-base: white, $light-blue, $light-puple;
 	border-radius: $radius;
 }
 
+@mixin transition-scale($scale) {
+	transition: all 0.3s ease;
+	transform: scale($scale);
+}
+
 @mixin respond-screen($breakpoint) {
 	@if $breakpoint == "mobile" {
 		@media (max-width: 768px) {

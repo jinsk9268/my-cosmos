@@ -37,7 +37,7 @@ export const BACKGROUND = {
 			color_min: 0.5,
 			color_max: 0.5,
 			smooth_min: -1,
-			smooth_max: 3.5,
+			smooth_max: 2.8,
 			weight_time_speed: 0.6,
 			weight_min: 0.2,
 			weight_max: 0.75,
