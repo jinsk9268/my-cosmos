@@ -64,11 +64,11 @@ class GLPipeline {
 
 	/**
 	 * @param {Float32Array} data
-	 * @param {GLenum} [usage]
 	 * @param {GLenum} [bufferType]
+	 * @param {GLenum} [usage]
 	 * @returns {WebGLBuffer} WebGL buffer 생성하여 반환
 	 */
-	createBuffer(data, usage = this.gl.STATIC_DRAW, bufferType = this.gl.ARRAY_BUFFER) {
+	createBuffer({ data, bufferType = this.gl.ARRAY_BUFFER, usage = this.gl.STATIC_DRAW }) {
 		const buffer = this.gl.createBuffer();
 		this.gl.bindBuffer(bufferType, buffer);
 		this.gl.bufferData(bufferType, data, usage);

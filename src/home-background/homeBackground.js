@@ -20,7 +20,7 @@ const auroraGL = new GLPipeline(gl, auroraVertexSource, auroraFragmentSource);
 auroraGL.useProgram();
 
 // 오로라 버퍼 생성
-auroraGL.createBuffer(AURORA.POS);
+auroraGL.createBuffer({ data: AURORA.POS });
 
 // 오로라 vertexArray 생성
 const auroraPositionLocation = auroraGL.getAttribLocation("a_position");
@@ -53,7 +53,7 @@ for (let i = 0; i < STAR.QTY; i++) {
 	starPosition[idx + 2] = randomFloat(-1, 1); // z
 }
 
-const starPositionBuffer = starGL.createBuffer(starPosition);
+const starPositionBuffer = starGL.createBuffer({ data: starPosition });
 
 // 별 vertexArray 생성
 const starPositionLocation = starGL.getAttribLocation("a_position");

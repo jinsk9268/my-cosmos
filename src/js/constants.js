@@ -17,6 +17,7 @@ export const LOCATION_HASH = {
 	HASH_MY_COSMOS: `#${MY_COSMOS}`,
 };
 
+// 유니폼 타입 관련 상수 ---------------------
 export const UNIFORM_TYPE = {
 	UNIFORM_1_F: "uniform1f",
 	UNIFORM_2_FV: "uniform2fv",
@@ -26,22 +27,24 @@ export const UNIFORM_TYPE = {
 };
 
 // 홈 background 관련 상수 ---------------------
-const STAR_QTY = 1500;
+const STAR_QTY = 1250;
 const STAR_THETA_RATIO = 0.55;
 export const BACKGROUND = {
 	// aurora
 	AURORA: {
 		POS: numArrToF32Arr([-1, -1, 1, -1, -1, 1, 1, 1]),
 		UNIFORMS: {
-			color_min: 0.4,
+			color_min: 0.5,
 			color_max: 0.5,
-			base: numArrToF32Arr([0, 0, 0, 0]),
 			smooth_min: -1,
-			smooth_max: 2,
+			smooth_max: 3.5,
 			weight_time_speed: 0.6,
 			weight_min: 0.2,
-			weight_max: 0.65,
-			color_alpha: 0.94,
+			weight_max: 0.75,
+			octaves: 6,
+			frequency_multiplier: 2,
+			amplitude_multiplier: 0.5,
+			texture_scale: 3,
 		},
 	},
 	// star
