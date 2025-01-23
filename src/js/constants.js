@@ -34,8 +34,6 @@ export const BACKGROUND = {
 	AURORA: {
 		POS: numArrToF32Arr([-1, -1, 1, -1, -1, 1, 1, 1]),
 		UNIFORMS: {
-			color_min: 0.5,
-			color_max: 0.5,
 			smooth_min: -1,
 			smooth_max: 2.8,
 			weight_time_speed: 0.6,

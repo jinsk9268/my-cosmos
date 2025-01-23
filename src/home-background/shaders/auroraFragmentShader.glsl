@@ -7,8 +7,6 @@ in vec4 v_color;
 out vec4 f_color;
 
 struct settings {
-  float color_min;
-  float color_max;
   int smooth_min;
   float smooth_max;
   float weight_time_speed;
@@ -62,7 +60,8 @@ float fbm(in vec2 uv) {
 void main() {
   vec4 color = v_color;
   color.y = 0.0;
-  color = asin(color) * u_aurora.color_min + u_aurora.color_max;
+  color = sin(color);
+
   color += fbm(v_uv * float(u_aurora.texture_scale));
 
   vec4 base_background = vec4(0.0, 0.0, 0.0, 1.0);
