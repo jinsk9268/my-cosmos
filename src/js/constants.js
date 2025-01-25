@@ -1,4 +1,5 @@
-import { numArrToF32Arr, rgbToGLRgb } from "./gl/glUtils";
+import { numArrToF32Arr, rgbToGLRgb } from "@/js/gl/glUtils.js";
+import { degreeToRadian } from "@/js/utils.js";
 
 // 공통 상수 ---------------------
 export const SCREEN = {
@@ -15,6 +16,24 @@ export const LOCATION_HASH = {
 	HOME: "home",
 	MY_COSMOS,
 	HASH_MY_COSMOS: `#${MY_COSMOS}`,
+};
+
+// gl 화면 관련 상수 ---------------------
+export const CAMERA = {
+	FOV: degreeToRadian(45),
+	NEAR: 0.1,
+	FAR: 100,
+	EYE: [0, 0, 10],
+	CENTER: [0, 0, 0],
+	UP: [0, 1, 0],
+	SPEED_RATE: 0.01,
+	ZOOM_MIN: 1,
+	ZOOM_MAX: 50,
+	ZOOM_OFFSET: 7,
+};
+
+export const MODEL = {
+	CENTER: [0, 0, 0],
 };
 
 // 유니폼 타입 관련 상수 ---------------------

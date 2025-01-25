@@ -22,3 +22,11 @@ export function isNull(value) {
 export function randomFloat(min, max) {
 	return Math.random() * (max - min) + min;
 }
+
+/**
+ * @param {number} degree
+ * @returns {number} 라디안으로 변환한 값 반환
+ */
+export function degreeToRadian(degree) {
+	return (degree * Math.PI) / 180;
+}

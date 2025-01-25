@@ -10,7 +10,7 @@ class CanvasOption {
 		this.canvas = document.getElementById(canvasId);
 		if (isNull(this.canvas)) throwError(ERROR_MSG.NO_CANVAS);
 		this.gl = this.canvas.getContext("webgl2");
-		if (isNull(this.canvas)) throwError(ERROR_MSG.NO_WEBGL2);
+		if (isNull(this.gl)) throwError(ERROR_MSG.NO_WEBGL2);
 
 		this.fps = ANIMATION.FPS;
 		this.interval = 1000 / this.fps;

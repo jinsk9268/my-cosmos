@@ -20,6 +20,8 @@ class GLPipeline {
 		this.vertexShader = createShader(gl, vertexSource, gl.VERTEX_SHADER);
 		this.fragmentShader = createShader(gl, fragmentSource, gl.FRAGMENT_SHADER);
 		this.program = createProgram(gl, this.vertexShader, this.fragmentShader);
+		this.buffer = null;
+		this.vertexArray = null;
 	}
 
 	useProgram() {
@@ -66,14 +68,13 @@ class GLPipeline {
 	 * @param {Float32Array} data
 	 * @param {GLenum} [bufferType]
 	 * @param {GLenum} [usage]
-	 * @returns {WebGLBuffer} WebGL buffer 생성하여 반환
 	 */
 	createBuffer({ data, bufferType = this.gl.ARRAY_BUFFER, usage = this.gl.STATIC_DRAW }) {
 		const buffer = this.gl.createBuffer();
 		this.gl.bindBuffer(bufferType, buffer);
 		this.gl.bufferData(bufferType, data, usage);
 
-		return buffer;
+		this.buffer = buffer;
 	}
 
 	/**
@@ -81,8 +82,8 @@ class GLPipeline {
 	 * @param {number} offset
 	 * @param {Float32Array} data 새로 갱신할 데이터
 	 */
-	bindBufferSubData(buffer, offset, data) {
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
+	bindBufferSubData(offset, data) {
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer);
 		this.gl.bufferSubData(this.gl.ARRAY_BUFFER, offset, data);
 	}
 
@@ -102,18 +103,17 @@ class GLPipeline {
 		this.gl.enableVertexAttribArray(location);
 		this.gl.vertexAttribPointer(location, size, type, normalized, stride, offset);
 
-		return vertexArray;
+		this.vertexArray = vertexArray;
 	}
 
 	/**
 	 * @param {object} param
-	 * @param {WebGLVertexArrayObject} param.vertexArray
 	 * @param {GLenum} param.module
 	 * @param {number} [param.first]
 	 * @param {count} param.count
 	 */
-	bindAndDrawArrays({ vertexArray, module, first = 0, count }) {
-		this.gl.bindVertexArray(vertexArray);
+	bindAndDrawArrays({ module, first = 0, count }) {
+		this.gl.bindVertexArray(this.vertexArray);
 		this.gl.drawArrays(module, first, count);
 	}
 }

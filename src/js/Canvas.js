@@ -21,6 +21,7 @@ class Canvas extends CanvasOptions {
 		this.canvas.style.height = `${this.canvasCssHeight}px`;
 
 		this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
+		this.aspect = this.gl.canvas.width / this.gl.canvas.height;
 	}
 }
 

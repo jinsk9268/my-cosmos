@@ -24,11 +24,7 @@ auroraGL.createBuffer({ data: AURORA.POS });
 
 // 오로라 vertexArray 생성
 const auroraPositionLocation = auroraGL.getAttribLocation("a_position");
-const auroraPositionArray = auroraGL.createVertexArray({
-	location: auroraPositionLocation,
-	size: 2,
-	type: gl.FLOAT,
-});
+auroraGL.createVertexArray({ location: auroraPositionLocation, size: 2, type: gl.FLOAT });
 
 // 오로라 유니폼
 const auroraUTimeLocation = auroraGL.getUniformLocation("u_time");
@@ -52,16 +48,11 @@ for (let i = 0; i < STAR.QTY; i++) {
 	starPosition[idx + 1] = scaledRadius * Math.sin(theta); // y
 	starPosition[idx + 2] = randomFloat(-1, 1); // z
 }
-
-const starPositionBuffer = starGL.createBuffer({ data: starPosition });
+starGL.createBuffer({ data: starPosition });
 
 // 별 vertexArray 생성
 const starPositionLocation = starGL.getAttribLocation("a_position");
-const starPositionArray = starGL.createVertexArray({
-	location: starPositionLocation,
-	size: 3,
-	type: gl.FLOAT,
-});
+starGL.createVertexArray({ location: starPositionLocation, size: 3, type: gl.FLOAT });
 
 // 별 유니폼 ---------------------
 const starUTimeLocation = starGL.getUniformLocation("u_time");
@@ -74,11 +65,7 @@ function renderAurora(uTime) {
 	auroraGL.useProgram();
 	gl.uniform1f(auroraUTimeLocation, uTime);
 
-	auroraGL.bindAndDrawArrays({
-		vertexArray: auroraPositionArray,
-		module: gl.TRIANGLE_STRIP,
-		count: 4,
-	});
+	auroraGL.bindAndDrawArrays({ module: gl.TRIANGLE_STRIP, count: 4 });
 }
 
 // 별 render
@@ -86,17 +73,13 @@ function renderStar(uTime) {
 	starGL.useProgram();
 	gl.uniform1f(starUTimeLocation, uTime);
 
-	starGL.bindBufferSubData(starPositionBuffer, 0, starPosition);
-	starGL.bindAndDrawArrays({
-		vertexArray: starPositionArray,
-		module: gl.POINTS,
-		count: STAR.QTY,
-	});
+	starGL.bindAndDrawArrays({ module: gl.POINTS, count: STAR.QTY });
 }
 
 // 배경화면 render
-let then = document.timeline.currentTime;
 function renderBackground() {
+	let then = document.timeline.currentTime;
+
 	function frame(now) {
 		const delta = now - then;
 
@@ -136,7 +119,7 @@ function handleMessage(e) {
 	}
 }
 
-// 실행 ---------------------
+// 이벤트 리스너 등록 ---------------------
 window.addEventListener("DOMContentLoaded", handleLoad);
 window.addEventListener("load", handleLoad);
 window.addEventListener("resize", handleResize);
