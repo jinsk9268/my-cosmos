@@ -19,7 +19,7 @@ export const LOCATION_HASH = {
 };
 
 // gl 화면 관련 상수 ---------------------
-export const CAMERA = {
+export const PERSPECTIVE_CAMERA = {
 	FOV: degreeToRadian(45),
 	NEAR: 0.1,
 	FAR: 100,
@@ -46,8 +46,6 @@ export const UNIFORM_TYPE = {
 };
 
 // 홈 background 관련 상수 ---------------------
-const STAR_QTY = 1250;
-const STAR_THETA_RATIO = 0.55;
 export const BACKGROUND = {
 	// aurora
 	AURORA: {
@@ -66,11 +64,10 @@ export const BACKGROUND = {
 	},
 	// star
 	STAR: {
-		QTY: STAR_QTY,
-		THETA_RATIO: STAR_THETA_RATIO,
+		QTY: 1250,
+		THETA_OFFSET: 0.55,
 		RADIUS_MIN: 0,
-		RADIUS_MAX: Math.sqrt((STAR_QTY - 1) * STAR_THETA_RATIO),
-		SADIUS_SCALE: 2,
+		RADIUS_SCALE: 2,
 		UNIFORMS_V: {
 			intensity: 60,
 			base_size: 0.5,

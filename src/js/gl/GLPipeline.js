@@ -1,11 +1,11 @@
-import { throwError, isNull } from "../utils";
+import { throwError, isNull } from "@/js/utils.js";
 import {
 	createShader,
 	createProgram,
 	getUniformType,
 	numArrToF32Arr,
 	isMultiDemensionArr,
-} from "./glUtils";
+} from "@/js/gl/glUtils.js";
 import { ERROR_MSG } from "@/js/constants.js";
 
 class GLPipeline {
@@ -20,8 +20,8 @@ class GLPipeline {
 		this.vertexShader = createShader(gl, vertexSource, gl.VERTEX_SHADER);
 		this.fragmentShader = createShader(gl, fragmentSource, gl.FRAGMENT_SHADER);
 		this.program = createProgram(gl, this.vertexShader, this.fragmentShader);
-		this.buffer = null;
-		this.vertexArray = null;
+		this.vertexBuffer = null;
+		this.vertexArrays = new Map();
 	}
 
 	useProgram() {
@@ -46,7 +46,7 @@ class GLPipeline {
 
 	/**
 	 * @param {string} name
-	 * @param {Object} [struct]
+	 * @param {object} [struct]
 	 */
 	sendUniformStruct(name, struct = {}) {
 		Object.entries(struct).forEach(([key, value]) => {
@@ -66,25 +66,22 @@ class GLPipeline {
 
 	/**
 	 * @param {Float32Array} data
-	 * @param {GLenum} [bufferType]
 	 * @param {GLenum} [usage]
 	 */
-	createBuffer({ data, bufferType = this.gl.ARRAY_BUFFER, usage = this.gl.STATIC_DRAW }) {
+	createVertexBuffer({ data, usage = this.gl.STATIC_DRAW }) {
 		const buffer = this.gl.createBuffer();
-		this.gl.bindBuffer(bufferType, buffer);
-		this.gl.bufferData(bufferType, data, usage);
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
+		this.gl.bufferData(this.gl.ARRAY_BUFFER, data, usage);
 
-		this.buffer = buffer;
+		this.vertexBuffer = buffer;
 	}
 
-	/**
-	 * @param {WebGLBuffer} buffer
-	 * @param {number} offset
-	 * @param {Float32Array} data 새로 갱신할 데이터
-	 */
-	bindBufferSubData(offset, data) {
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer);
-		this.gl.bufferSubData(this.gl.ARRAY_BUFFER, offset, data);
+	createIndexBuffer({ data, usage = this.gl.STATIC_DRAW }) {
+		const buffer = this.gl.createBuffer();
+		this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, buffer);
+		this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, data, usage);
+
+		this.indexBuffer = buffer;
 	}
 
 	/**
@@ -100,20 +97,22 @@ class GLPipeline {
 	createVertexArray({ location, size, type, normalized = false, stride = 0, offset = 0 }) {
 		const vertexArray = this.gl.createVertexArray();
 		this.gl.bindVertexArray(vertexArray);
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexBuffer);
 		this.gl.enableVertexAttribArray(location);
 		this.gl.vertexAttribPointer(location, size, type, normalized, stride, offset);
 
-		this.vertexArray = vertexArray;
+		this.vertexArrays.set(location, vertexArray);
 	}
 
 	/**
 	 * @param {object} param
+	 * @param {GLint} param.location
 	 * @param {GLenum} param.module
 	 * @param {number} [param.first]
-	 * @param {count} param.count
+	 * @param {number} param.count
 	 */
-	bindAndDrawArrays({ module, first = 0, count }) {
-		this.gl.bindVertexArray(this.vertexArray);
+	bindAndDrawArrays({ location, module, first = 0, count }) {
+		this.gl.bindVertexArray(this.vertexArrays.get(location));
 		this.gl.drawArrays(module, first, count);
 	}
 }

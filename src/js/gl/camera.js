@@ -1,112 +1,74 @@
 import { mat4 } from "gl-matrix";
-import { CAMERA } from "@/js/constants";
+import { PERSPECTIVE_CAMERA } from "@/js/constants";
 
-const projectionMatrix = mat4.create();
-const viewMatrix = mat4.create();
-const viewWithoutTranslateMatrix = mat4.clone(viewMatrix);
-const cameraView = { cameraPos: CAMERA.EYE, targetPos: CAMERA.CENTER, up: CAMERA.UP };
+const { FOV, NEAR, FAR, EYE, CENTER, UP, SPEED_RATE, ZOOM_MIN, ZOOM_MAX, ZOOM_OFFSET } =
+	PERSPECTIVE_CAMERA;
 
-// 카메라 세팅과 조작 ---------------------
-/**
- * @param {number} fov 카메라 시야 각도
- * @param {number} aspect 화면 비율
- * @param {number} near 근거리 초점
- * @param {number} far 원거리 초점
- */
-function perspective({ fov = CAMERA.FOV, aspect, near = CAMERA.NEAR, far = CAMERA.FAR }) {
-	mat4.perspective(projectionMatrix, fov, aspect, near, far);
-}
+class Camera {
+	/**
+	 *
+	 * @param {WebGL2RenderingContext} gl
+	 */
+	constructor(gl) {
+		this.projectionMatrix = mat4.create();
+		this.viewMatrix = mat4.create();
+		this.viewWithoutTranslateMatrix = mat4.create();
+		this.aspect = gl.canvas.width / gl.canvas.height;
 
-/**
- * @param {object} [param]
- * @param {number[]} param.cameraPos 카메라 위치
- * @param {number[]} param.targetPos 바라보는 지점
- * @param {number[]} param.up 카메라 위쪽 방향
- */
-function view() {
-	const { cameraPos, targetPos, up } = cameraView;
-	mat4.lookAt(viewMatrix, cameraPos, targetPos, up);
+		this.initCameraVars();
 
-	mat4.copy(viewWithoutTranslateMatrix, viewMatrix);
-	viewWithoutTranslateMatrix[12] = 0;
-	viewWithoutTranslateMatrix[13] = 0;
-	viewWithoutTranslateMatrix[14] = 0;
-}
-
-function rotateXY(deltaX, deltaY) {
-	mat4.rotateX(viewMatrix, viewMatrix, deltaX * CAMERA.SPEED_RATE);
-	mat4.rotateY(viewMatrix, viewMatrix, deltaY * CAMERA.SPEED_RATE);
-}
-
-function zoomZ(delta) {
-	cameraView.cameraPos[2] = Math.max(
-		CAMERA.ZOOM_MIN,
-		Math.min(cameraView.cameraPos[2] + delta * CAMERA.SPEED_RATE, CAMERA.ZOOM_MAX),
-	);
-	view();
-}
-
-// 이벤트 리스너 ---------------------
-// 마우스
-let isDrag = false;
-function handleMousedown() {
-	isDrag = true;
-}
-
-function handleMousemove(e) {
-	if (isDrag) {
-		rotateXY(e.movementX, e.movementY);
+		this.perspective();
+		this.lookAt();
 	}
-}
 
-function handleMouseup() {
-	isDrag = false;
-}
+	initCameraVars() {
+		this.fov = FOV;
+		this.near = NEAR;
+		this.far = FAR;
 
-// 터치
-const prevTouch = { x: 0, y: 0 };
-let prevTouchDistance = 0;
+		this.cameraPos = EYE;
+		this.targetPos = CENTER;
+		this.up = UP;
 
-function handleTouchmove(e) {
-	const touchPoint = e.touches.length;
+		this.speed = SPEED_RATE;
+		this.zoomMin = ZOOM_MIN;
+		this.zoomMax = ZOOM_MAX;
+		this.zoomOffset = ZOOM_OFFSET;
+	}
 
-	// 회전
-	if (touchPoint === 1) {
-		const { clientX, clientY } = e.touches[0];
-		const deltaX = clientX - prevTouch.x;
-		const deltaY = clientY - prevTouch.y;
-		rotateXY(deltaX, deltaY);
+	perspective() {
+		mat4.perspective(this.projectionMatrix, this.fov, this.aspect, this.near, this.far);
+	}
 
-		prevTouch.x = clientX;
-		prevTouch.y = clientY;
-	} else if (touchPoint === 2) {
-		e.preventDefault(); // 브라우저 확대 축소 방지
-		const [touch1, touch2] = e.touches;
-		const currentDist = Math.hypot(
-			touch2.clientX - touch1.clientX,
-			touch2.clientX - touch2.clientY,
+	lookAt() {
+		mat4.lookAt(this.viewMatrix, this.cameraPos, this.targetPos, this.up);
+
+		mat4.copy(this.viewWithoutTranslateMatrix, this.viewMatrix);
+		this.viewWithoutTranslateMatrix[12] = 0;
+		this.viewWithoutTranslateMatrix[13] = 0;
+		this.viewWithoutTranslateMatrix[14] = 0;
+	}
+
+	/**
+	 * @param {number} deltaX
+	 * @param {number} deltaY
+	 */
+	rotateXY(deltaX, deltaY) {
+		mat4.rotateX(this.viewMatrix, this.viewMatrix, deltaX * this.speed);
+		mat4.rotateY(this.viewMatrix, this.viewMatrix, deltaY * this.speed);
+	}
+
+	/**
+	 * @param {number} delta
+	 */
+	zoomZ(delta) {
+		this.cameraPos[2] = Math.max(
+			this.zoomMin,
+			Math.min(this.cameraPos[2] + delta * this.speed, this.zoomMax),
 		);
 
-		if (prevTouchDistance) {
-			const delta = currentDist - prevTouchDistance;
-			zoomZ(delta > 0 ? -CAMERA.ZOOM_OFFSET : CAMERA.ZOOM_OFFSET);
-		}
-
-		prevTouchDistance = currentDist;
+		this.lookAt();
 	}
 }
 
-const camera = {
-	projectionMatrix,
-	viewMatrix,
-	viewWithoutTranslateMatrix,
-	perspective,
-	view,
-	handleMousedown,
-	handleMousemove,
-	handleMouseup,
-	handleWheel: zoomZ,
-	handleTouchmove,
-};
-
-export default camera;
+export default Camera;
