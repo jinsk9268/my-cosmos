@@ -1,5 +1,5 @@
 import Shape from "@/js/shape/Shape.js";
-import { gaussianRandom } from "../utils";
+import { gaussianRandom } from "@/js/utils.js";
 
 class SpiralCore extends Shape {
 	/**
@@ -51,11 +51,11 @@ class SpiralCore extends Shape {
 	}
 
 	calculateXYZ(startX, endX, startY, endY) {
-		const x = gaussianRandom(startX, endX);
-		const y = gaussianRandom(startY, endY);
-		const z = gaussianRandom(0, this.thickness);
+		const baseX = gaussianRandom(startX, endX);
+		const baseY = gaussianRandom(startY, endY);
+		const baseZ = gaussianRandom(-this.thickness, this.thickness);
 
-		return { x, y, z };
+		return this.calculateNoiseXYZ(baseX, baseY, baseZ);
 	}
 
 	calculateSpiralXYZ(gx, gy, gz, offset) {
@@ -64,7 +64,10 @@ class SpiralCore extends Shape {
 		theta += gx > 0 ? Math.atan(gy / gx) : Math.atan(gy / gx) + Math.PI;
 		theta += (radius / this.armXDist) * this.spiral;
 
-		return { x: radius * Math.cos(theta), y: radius * Math.sin(theta), z: gz };
+		const baseX = radius * Math.cos(theta);
+		const baseY = radius * Math.sin(theta);
+
+		return this.calculateNoiseXYZ(baseX, baseY, gz);
 	}
 
 	generatePosition() {

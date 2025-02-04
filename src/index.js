@@ -25,7 +25,9 @@ galaxyGL.useProgram();
 const { setGalaxyShapes } = useTextureStore.getState();
 setGalaxyShapes([
 	new Sphere(SHAPE_TYPE.SPHERE),
-	new FermatSprial(SHAPE_TYPE.FERMAT_SPIRAL),
+	new FermatSprial(SHAPE_TYPE.FERMAT_SPIRAL_TORUS),
+	new FermatSprial(SHAPE_TYPE.FERMAT_SPIRAL_WHIRL),
+	new FermatSprial(SHAPE_TYPE.FERMAT_SPIRAL_FLOWER),
 	new SpiralCore(SHAPE_TYPE.SPIRAL_ARM_2),
 	new SpiralCore(SHAPE_TYPE.SPIRAL_ARM_4),
 	new SpiralCore(SHAPE_TYPE.SPIRAL_ARM_5),

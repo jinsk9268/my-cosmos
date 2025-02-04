@@ -34,11 +34,11 @@ class FermatSpiral extends Shape {
 	}
 
 	calculateXYZ(radius, theta) {
-		const x = radius * Math.cos(theta);
-		const y = radius * Math.sin(theta);
-		const z = randomFloat(-1, 1);
+		const baseX = radius * Math.cos(theta);
+		const baseY = radius * Math.sin(theta);
+		const baseZ = randomFloat(-1, 1);
 
-		return { x: randomFloat(x, x + 1), y: randomFloat(y, y + 1), z };
+		return this.calculateNoiseXYZ(baseX, baseY, baseZ);
 	}
 
 	generatePosition() {

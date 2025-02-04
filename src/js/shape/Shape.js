@@ -1,3 +1,4 @@
+import { createNoise3D } from "simplex-noise";
 import { useTextureStore } from "@/js/store.js";
 
 class Shape {
@@ -15,6 +16,16 @@ class Shape {
 		} else {
 			this.positionPoints = new Float32Array(this.qty * 3); // x, y, z
 		}
+	}
+
+	calculateNoiseXYZ(baseX, baseY, baseZ) {
+		const noise3d = createNoise3D(Math.random);
+		const noiseFactor = noise3d(baseX, baseY, baseZ);
+
+		const x = baseX + noiseFactor * 0.5;
+		const y = baseY + noiseFactor * 0.5;
+		const z = baseZ + noiseFactor * 0.5;
+		return { x, y, z };
 	}
 
 	/**

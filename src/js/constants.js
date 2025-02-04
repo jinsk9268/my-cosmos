@@ -112,11 +112,27 @@ export const MSG = {
 // 은하 모형 관련 상수 ---------------------
 export const SHAPE_TYPE = {
 	SPHERE: { qty: 1250, needTexture: true, radius: 12 },
-	FERMAT_SPIRAL: {
+	FERMAT_SPIRAL_TORUS: {
 		qty: 8000,
 		needTexture: true,
 		thetaOffset: 0.25,
 		radiusMin: 60,
+		scale: 6,
+		twoWay: true,
+	},
+	FERMAT_SPIRAL_WHIRL: {
+		qty: 7000,
+		needTexture: true,
+		thetaOffset: 0.9,
+		radiusMin: 65,
+		scale: 7,
+		twoWay: false,
+	},
+	FERMAT_SPIRAL_FLOWER: {
+		qty: 7000,
+		needTexture: true,
+		thetaOffset: 0.66,
+		radiusMin: 55,
 		scale: 6,
 		twoWay: true,
 	},
