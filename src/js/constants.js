@@ -23,7 +23,7 @@ export const PERSPECTIVE_CAMERA = {
 	FOV: degreeToRadian(45),
 	NEAR: 0.1,
 	FAR: 100,
-	EYE: [0, 0, 10],
+	EYE: [0, -20, 40],
 	CENTER: [0, 0, 0],
 	UP: [0, 1, 0],
 	SPEED_RATE: 0.01,
@@ -45,6 +45,13 @@ export const UNIFORM_TYPE = {
 	UNIFORM_1_I: "uniform1i",
 };
 
+// Texture 관련 상수 ---------------------
+export const TEXTURE = {
+	FONT_FAMILY: "Dongle",
+	DIVISOR_RATE: 0.52,
+	CANVAS_SIZE_RATE: 0.1,
+};
+
 // 홈 background 관련 상수 ---------------------
 export const BACKGROUND = {
 	// aurora
@@ -64,7 +71,7 @@ export const BACKGROUND = {
 	},
 	// star
 	STAR: {
-		QTY: 1250,
+		QTY: 2000,
 		THETA_OFFSET: 0.55,
 		RADIUS_MIN: 0,
 		RADIUS_SCALE: 2,
@@ -90,6 +97,7 @@ export const BACKGROUND = {
 export const ERROR_MSG = {
 	NO_CANVAS: "캔버스 객체를 발견하지 못했습니다. 다시 확인해주세요.",
 	NO_WEBGL2: "WebGL2를 지원하지 않는 브라우저입니다.",
+	NO_CTX: "Canvas 2d Context 생성 중 오류가 발생했습니다. 다시 시도해주세요.",
 	NO_NAME: "1~10 글자의 이름 또는 닉네임을 입력해주세요.",
 	NO_UNIFORM_TYPE:
 		"값의 유니폼 타입이 존재하지 않습니다. 해당 타입을 생성하거나 value를 다시 확인해주세요.",
@@ -99,4 +107,65 @@ export const ERROR_MSG = {
 export const MSG = {
 	CANCLE_BG_ANIMATION: "홈 배경 애니메이션 중지",
 	START_BG_ANIMATION: "홈 배경 애니메이션 시작",
+};
+
+// 은하 모형 관련 상수 ---------------------
+export const SHAPE_TYPE = {
+	SPHERE: { qty: 1250, needTexture: true, radius: 8 },
+	FERMAT_SPIRAL: {
+		qty: 6500,
+		needTexture: true,
+		thetaOffset: 0.9,
+		radiusMin: 50,
+		scale: 10,
+		twoWay: false,
+	},
+	SPIRAL_ARM_2: {
+		qty: 10000,
+		needTexture: true,
+		numArms: 2,
+		thickness: 1,
+		coreXDist: 2,
+		coreYDist: 2,
+		outerCoreXDist: 5,
+		outerCoreYDist: 5,
+		armXDist: 4,
+		armYDist: 2,
+		armXMean: 8,
+		armYMean: 4,
+		spiral: 2,
+		arms: 2,
+	},
+	SPIRAL_ARM_4: {
+		qty: 10000,
+		needTexture: true,
+		numArms: 4,
+		thickness: 1,
+		coreXDist: 1,
+		coreYDist: 1,
+		outerCoreXDist: 4,
+		outerCoreYDist: 4,
+		armXDist: 4,
+		armYDist: 2,
+		armXMean: 8,
+		armYMean: 4,
+		spiral: 3,
+		arms: 2,
+	},
+	SPIRAL_ARM_5: {
+		qty: 10000,
+		needTexture: true,
+		numArms: 5,
+		thickness: 1,
+		coreXDist: 3,
+		coreYDist: 3,
+		outerCoreXDist: 5,
+		outerCoreYDist: 5,
+		armXDist: 4,
+		armYDist: 2,
+		armXMean: 8,
+		armYMean: 4,
+		spiral: 2,
+		arms: 3,
+	},
 };

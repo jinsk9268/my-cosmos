@@ -20,8 +20,8 @@ class GLPipeline {
 		this.vertexShader = createShader(gl, vertexSource, gl.VERTEX_SHADER);
 		this.fragmentShader = createShader(gl, fragmentSource, gl.FRAGMENT_SHADER);
 		this.program = createProgram(gl, this.vertexShader, this.fragmentShader);
-		this.vertexBuffer = null;
-		this.vertexArrays = new Map();
+		this.vertexBuffer = this.gl.createBuffer();
+		this.vertexArray = this.gl.createVertexArray();
 	}
 
 	useProgram() {
@@ -65,23 +65,23 @@ class GLPipeline {
 	}
 
 	/**
-	 * @param {Float32Array} data
-	 * @param {GLenum} [usage]
+	 * @param {Object} param
+	 * @param {GLint} param.location
+	 * @param {boolean} [param.transpose]
+	 * @param {Float32List} param.data
 	 */
-	createVertexBuffer({ data, usage = this.gl.STATIC_DRAW }) {
-		const buffer = this.gl.createBuffer();
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
-		this.gl.bufferData(this.gl.ARRAY_BUFFER, data, usage);
-
-		this.vertexBuffer = buffer;
+	sendUniformMatrix({ location, transpose = false, data }) {
+		this.gl.uniformMatrix4fv(location, transpose, data);
 	}
 
-	createIndexBuffer({ data, usage = this.gl.STATIC_DRAW }) {
-		const buffer = this.gl.createBuffer();
-		this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, buffer);
-		this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, data, usage);
-
-		this.indexBuffer = buffer;
+	/**
+	 * @param {object} param
+	 * @param {Float32Array} param.data
+	 * @param {GLenum} [param.usage]
+	 */
+	setVertexBuffer({ data, usage = this.gl.STATIC_DRAW }) {
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexBuffer);
+		this.gl.bufferData(this.gl.ARRAY_BUFFER, data, usage);
 	}
 
 	/**
@@ -92,27 +92,22 @@ class GLPipeline {
 	 * @param {boolean} [param.normalized]
 	 * @param {number} [param.stride]
 	 * @param {number} [param.offset]
-	 * @returns {WebGLVertexArrayObject} vertexArray 생성하여 반환
 	 */
-	createVertexArray({ location, size, type, normalized = false, stride = 0, offset = 0 }) {
-		const vertexArray = this.gl.createVertexArray();
-		this.gl.bindVertexArray(vertexArray);
+	setVertexArray({ location, size, type, normalized = false, stride = 0, offset = 0 }) {
+		this.gl.bindVertexArray(this.vertexArray);
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexBuffer);
 		this.gl.enableVertexAttribArray(location);
 		this.gl.vertexAttribPointer(location, size, type, normalized, stride, offset);
-
-		this.vertexArrays.set(location, vertexArray);
 	}
 
 	/**
 	 * @param {object} param
-	 * @param {GLint} param.location
 	 * @param {GLenum} param.module
 	 * @param {number} [param.first]
 	 * @param {number} param.count
 	 */
-	bindAndDrawArrays({ location, module, first = 0, count }) {
-		this.gl.bindVertexArray(this.vertexArrays.get(location));
+	bindAndDrawArrays({ module, first = 0, count }) {
+		this.gl.bindVertexArray(this.vertexArray);
 		this.gl.drawArrays(module, first, count);
 	}
 }

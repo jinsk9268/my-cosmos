@@ -1,18 +1,18 @@
 import "@/style/style.scss";
-import Canvas from "@/js/Canvas.js";
-import GLPipeline from "@/js/gl/GLPipeline.js";
-import { BACKGROUND, MSG } from "@/js/constants.js";
-import { isNull, randomFloat } from "@/js/utils.js";
+import CanvasGL from "@/js/canvas/CanvasGL.js";
+import FermatSpiral from "@/js/shape/FermatSpiral.js";
 import starVertexSource from "@/home-background/shaders/starVertexShader.glsl";
 import starFragmentSource from "@/home-background/shaders/starFragmentShader.glsl";
 import auroraVertexSource from "@/home-background/shaders/auroraVertexShader.glsl";
 import auroraFragmentSource from "@/home-background/shaders/auroraFragmentShader.glsl";
+import GLPipeline from "@/js/gl/GLPipeline.js";
+import { BACKGROUND, MSG } from "@/js/constants.js";
+import { isNull } from "@/js/utils.js";
 
 const { AURORA, STAR } = BACKGROUND;
 
 // Canvas ---------------------
-const canvas = new Canvas("bg_canvas");
-canvas.setCanvasSize();
+const canvas = new CanvasGL("bg_canvas");
 const gl = canvas.gl;
 
 // 오로라 ---------------------
@@ -20,11 +20,11 @@ const auroraGL = new GLPipeline(gl, auroraVertexSource, auroraFragmentSource);
 auroraGL.useProgram();
 
 // 오로라 버퍼 생성
-auroraGL.createBuffer({ data: AURORA.POS });
+auroraGL.setVertexBuffer({ data: AURORA.POS });
 
 // 오로라 vertexArray 생성
 const auroraPositionLocation = auroraGL.getAttribLocation("a_position");
-auroraGL.createVertexArray({ location: auroraPositionLocation, size: 2, type: gl.FLOAT });
+auroraGL.setVertexArray({ location: auroraPositionLocation, size: 2, type: gl.FLOAT });
 
 // 오로라 유니폼
 const auroraUTimeLocation = auroraGL.getUniformLocation("u_time");
@@ -35,31 +35,28 @@ const starGL = new GLPipeline(gl, starVertexSource, starFragmentSource);
 starGL.useProgram();
 
 // 별 버퍼 생성 (포지션은 페르마 양방향 나선 기반)
-const starPosition = new Float32Array(STAR.QTY * 3);
-for (let i = 0; i < STAR.QTY; i++) {
-	const idx = i * 3;
+const fermatStar = new FermatSpiral({
+	qty: STAR.QTY,
+	thetaOffset: STAR.THETA_OFFSET,
+	radiusMin: STAR.RADIUS_MIN,
+	twoWay: true,
+	scale: STAR.RADIUS_SCALE,
+	needTexture: false,
+});
+fermatStar.generatePosition();
 
-	const theta = i * STAR.THETA_RATIO * (i % 2 === 0 ? 1 : -1);
-	const radius = Math.sqrt(Math.abs(theta));
-	const normalizedRadius = (radius - STAR.RADIUS_MIN) / (STAR.RADIUS_MAX - STAR.RADIUS_MIN);
-	const scaledRadius = normalizedRadius * STAR.SADIUS_SCALE;
-
-	starPosition[idx] = scaledRadius * Math.cos(theta); // x
-	starPosition[idx + 1] = scaledRadius * Math.sin(theta); // y
-	starPosition[idx + 2] = randomFloat(-1, 1); // z
-}
-starGL.createBuffer({ data: starPosition });
+starGL.setVertexBuffer({ data: fermatStar.positionPoints });
 
 // 별 vertexArray 생성
 const starPositionLocation = starGL.getAttribLocation("a_position");
-starGL.createVertexArray({ location: starPositionLocation, size: 3, type: gl.FLOAT });
+starGL.setVertexArray({ location: starPositionLocation, size: 3, type: gl.FLOAT });
 
 // 별 유니폼 ---------------------
 const starUTimeLocation = starGL.getUniformLocation("u_time");
 starGL.sendUniformStruct("u_star_v", STAR.UNIFORMS_V);
 starGL.sendUniformStruct("u_star_f", STAR.UNIFORMS_F);
 
-// 애니메이션 ---------------------
+// 홈 배경화면 render ---------------------
 // 오로라 render
 function renderAurora(uTime) {
 	auroraGL.useProgram();
@@ -76,34 +73,23 @@ function renderStar(uTime) {
 	starGL.bindAndDrawArrays({ module: gl.POINTS, count: STAR.QTY });
 }
 
-// 배경화면 render
-function renderBackground() {
-	let then = document.timeline.currentTime;
-
-	function frame(now) {
-		const delta = now - then;
-
-		if (delta >= canvas.interval) {
-			const uTime = now * 0.001; // ms -> sec로 변환하여 GLSL 사용
-			renderAurora(uTime);
-			renderStar(uTime);
-
-			then = now - (delta % canvas.interval);
-		}
-
-		canvas.animationId = requestAnimationFrame(frame);
-	}
-
-	canvas.animationId = requestAnimationFrame(frame);
+function renderBackground(uTime) {
+	renderAurora(uTime);
+	renderStar(uTime);
 }
+canvas.animationFunc = renderBackground;
 
 // 이벤트 리스너 ---------------------
 function handleLoad() {
 	document.body.style.visibility = "visible";
+
+	if (isNull(canvas.animationId)) {
+		canvas.renderAnimation();
+	}
 }
 
 function handleResize() {
-	canvas.setCanvasSize();
+	canvas.setCanvasGLSize();
 }
 
 /**
@@ -111,11 +97,10 @@ function handleResize() {
  */
 function handleMessage(e) {
 	if (e.data === MSG.CANCLE_BG_ANIMATION && !isNull(canvas.animationId)) {
-		cancelAnimationFrame(canvas.animationId);
-		canvas.animationId = null;
+		canvas.cancelAnimation();
 	}
 	if (e.data === MSG.START_BG_ANIMATION && isNull(canvas.animationId)) {
-		renderBackground();
+		canvas.renderAnimation();
 	}
 }
 
@@ -124,4 +109,3 @@ window.addEventListener("DOMContentLoaded", handleLoad);
 window.addEventListener("load", handleLoad);
 window.addEventListener("resize", handleResize);
 window.addEventListener("message", (e) => handleMessage(e));
-renderBackground();
