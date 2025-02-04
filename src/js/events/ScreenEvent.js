@@ -61,6 +61,12 @@ class ScreenEvent {
 		this.domElements.myCosmos.style.display = screen === LOCATION_HASH.MY_COSMOS ? "block" : "none";
 	}
 
+	// 은하 모양 관리 ---------------------
+	getGalaxyShape() {
+		const { galaxyShapes } = useTextureStore.getState();
+		return galaxyShapes[randomInt(0, galaxyShapes.length - 1)];
+	}
+
 	// 이벤트 리스너 (화면) ---------------------
 	handleLoad() {
 		this.domElements.body.style.visibility = "visible";
@@ -83,12 +89,6 @@ class ScreenEvent {
 			this.switchScreen(HOME);
 			!isNull(this.canvas.animationId) && this.canvas.cancelAnimation();
 		}
-	}
-
-	// 은하 모양 관리 ---------------------
-	getGalaxyShape() {
-		const { galaxyShapes } = useTextureStore.getState();
-		return galaxyShapes[randomInt(0, galaxyShapes.length - 1)];
 	}
 
 	// 이벤트 리스너 (이름 입력 관련) ---------------------
