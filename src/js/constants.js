@@ -1,4 +1,4 @@
-import { numArrToF32Arr, rgbToGLRgb } from "@/js/gl/glUtils.js";
+import { numArrToF32Arr, rgbToGLRgb } from "@/js/utils.js";
 import { degreeToRadian } from "@/js/utils.js";
 
 // 공통 상수 ---------------------
@@ -23,7 +23,8 @@ export const PERSPECTIVE_CAMERA = {
 	FOV: degreeToRadian(60),
 	NEAR: 0.1,
 	FAR: 100,
-	EYE: [0, -20, 30],
+	EYE_START: [0, -20, 1],
+	EYE_END: [0, -25, 35],
 	CENTER: [0, -2, 0],
 	UP: [0, 1, 0],
 	SPEED_RATE: 0.01,
@@ -36,19 +37,10 @@ export const MODEL = {
 	CENTER: [0, 0, 0],
 };
 
-// 유니폼 타입 관련 상수 ---------------------
-export const UNIFORM_TYPE = {
-	UNIFORM_1_F: "uniform1f",
-	UNIFORM_2_FV: "uniform2fv",
-	UNIFORM_3_FV: "uniform3fv",
-	UNIFORM_4_FV: "uniform4fv",
-	UNIFORM_1_I: "uniform1i",
-};
-
 // Texture 관련 상수 ---------------------
 export const TEXTURE = {
 	FONT_FAMILY: "Dongle",
-	DIVISOR_RATE: 0.52,
+	DIVISOR_RATE: 0.56,
 	CANVAS_SIZE_RATE: 0.1,
 };
 
@@ -57,17 +49,6 @@ export const BACKGROUND = {
 	// aurora
 	AURORA: {
 		POS: numArrToF32Arr([-1, -1, 1, -1, -1, 1, 1, 1]),
-		UNIFORMS: {
-			smooth_min: -1,
-			smooth_max: 2.8,
-			weight_time_speed: 0.6,
-			weight_min: 0.2,
-			weight_max: 0.75,
-			octaves: 6,
-			frequency_multiplier: 2,
-			amplitude_multiplier: 0.5,
-			texture_scale: 3,
-		},
 	},
 	// star
 	STAR: {
@@ -75,21 +56,15 @@ export const BACKGROUND = {
 		THETA_OFFSET: 0.55,
 		RADIUS_MIN: 0,
 		RADIUS_SCALE: 2,
-		UNIFORMS_V: {
-			intensity: 60,
-			base_size: 0.5,
-			size_offset: 3.5,
-			brightness_base: 0.5,
-		},
-		UNIFORMS_F: {
-			colors: [
+		U_COLORS: numArrToF32Arr(
+			[
 				[204, 204, 255],
 				[159, 217, 255],
 				[225, 161, 255],
-			].map((arr) => rgbToGLRgb(arr)),
-			alpha_min: 0.1,
-			alpha_max: 1,
-		},
+			]
+				.map((arr) => rgbToGLRgb(arr))
+				.flat(),
+		),
 	},
 };
 
@@ -111,7 +86,14 @@ export const MSG = {
 
 // 은하 모형 관련 상수 ---------------------
 export const SHAPE_TYPE = {
-	SPHERE: { qty: 1250, needTexture: true, radius: 12 },
+	FERMAT_SPIRAL_CYCLONE: {
+		qty: 8000,
+		needTexture: true,
+		thetaOffset: 0.55,
+		radiusMin: 50,
+		scale: 6.5,
+		twoWay: true,
+	},
 	FERMAT_SPIRAL_TORUS: {
 		qty: 8000,
 		needTexture: true,
@@ -127,14 +109,6 @@ export const SHAPE_TYPE = {
 		radiusMin: 65,
 		scale: 7,
 		twoWay: false,
-	},
-	FERMAT_SPIRAL_FLOWER: {
-		qty: 7000,
-		needTexture: true,
-		thetaOffset: 0.66,
-		radiusMin: 55,
-		scale: 6,
-		twoWay: true,
 	},
 	SPIRAL_ARM_2: {
 		qty: 7000,
@@ -183,5 +157,21 @@ export const SHAPE_TYPE = {
 		armYMean: 4,
 		spiral: 2,
 		arms: 5,
+	},
+	SPIRAL_ARM_6: {
+		qty: 12000,
+		needTexture: true,
+		numArms: 6,
+		thickness: 1,
+		coreXDist: 4,
+		coreYDist: 2,
+		outerCoreXDist: 10,
+		outerCoreYDist: 5,
+		armXDist: 10,
+		armYDist: 2,
+		armXMean: 6,
+		armYMean: 4,
+		spiral: 3,
+		arms: 2,
 	},
 };

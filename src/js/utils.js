@@ -33,6 +33,22 @@ export function randomInt(min, max) {
 }
 
 /**
+ * @param {number[]} arr
+ * @returns {Float32Array} WebGL에 전달하기 위해 number 배열의 타입을 Float32Array로 변환해 반환
+ */
+export function numArrToF32Arr(arr = []) {
+	return new Float32Array(arr);
+}
+
+/**
+ * @param {number[]} rgb
+ * @returns {number[]} RGB 컬러를 WebGL 자료형(Float32Array)에 맞게 변환해서 반환
+ */
+export function rgbToGLRgb(rgb) {
+	return rgb.map((color) => color / 255);
+}
+
+/**
  * @param {number} degree
  * @returns {number} 라디안으로 변환한 값 반환
  */

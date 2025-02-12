@@ -6,22 +6,19 @@ in vec2 v_uv;
 in vec4 v_color;
 out vec4 f_color;
 
-struct settings {
-  int smooth_min;
-  float smooth_max;
-  float weight_time_speed;
-  float weight_min;
-  float weight_max;
-  int octaves;
-  int frequency_multiplier;
-  float amplitude_multiplier;
-  int texture_scale;
-};
 uniform float u_time;
-uniform settings u_aurora;
 
 const vec2 RANDOM_SEED = vec2(12.9898, 78.233);
 const float RANDOM_MULTIPLIER = 43758.5453123;
+const float SMOOTH_MIN = -1.0;
+const float SMOOTH_MAX = 2.8;
+const float WEIGHT_TIME_SPEED = 0.6;
+const float WEIGHT_MIN = 0.2;
+const float WEIGHT_MAX = 0.75;
+const int OCTAVES = 6;
+const float FREQUENCY_MULTIPLIER = 2.0;
+const float AMPLITUDE_MULTIPLIER = 0.5;
+const float TEXTURE_SCALE = 3.0;
 
 float random(in vec2 uv) {
   return fract(sin(dot(uv.xy, RANDOM_SEED)) * RANDOM_MULTIPLIER);
@@ -46,12 +43,11 @@ float noise(in vec2 uv) {
 float fbm(in vec2 uv) {
   float value = 0.0;
   float amplitude = 0.5;
-  float frequency = float(u_aurora.frequency_multiplier);
 
-  for(int i = 0; i < u_aurora.octaves; i++) {
+  for(int i = 0; i < OCTAVES; i++) {
     value += amplitude * noise(uv);
-    uv *= frequency; // 주파수 증가
-    amplitude *= u_aurora.amplitude_multiplier; // 진폭 감소
+    uv *= FREQUENCY_MULTIPLIER; // 주파수 증가
+    amplitude *= AMPLITUDE_MULTIPLIER; // 진폭 감소
   }
 
   return value;
@@ -62,11 +58,11 @@ void main() {
   color.y = 0.0;
   color = sin(color);
 
-  color += fbm(v_uv * float(u_aurora.texture_scale));
+  color += fbm(v_uv * TEXTURE_SCALE);
 
   vec4 base_background = vec4(0.0, 0.0, 0.0, 1.0);
-  float weight = smoothstep(float(u_aurora.smooth_min), u_aurora.smooth_max, v_color.y);
-  float weight_factor = sin(u_time * u_aurora.weight_time_speed) * u_aurora.weight_min + u_aurora.weight_max;
+  float weight = smoothstep(SMOOTH_MIN, SMOOTH_MAX, v_color.y);
+  float weight_factor = sin(u_time * WEIGHT_TIME_SPEED) * WEIGHT_MIN + WEIGHT_MAX;
 
   f_color = mix(base_background, color, weight * weight_factor);
 }

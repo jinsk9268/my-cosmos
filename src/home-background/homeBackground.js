@@ -28,7 +28,6 @@ auroraGL.setVertexArray({ location: auroraPositionLocation, size: 2, type: gl.FL
 
 // 오로라 유니폼
 const auroraUTimeLocation = auroraGL.getUniformLocation("u_time");
-auroraGL.sendUniformStruct("u_aurora", AURORA.UNIFORMS);
 
 // 별 ---------------------
 const starGL = new GLPipeline(gl, starVertexSource, starFragmentSource);
@@ -53,8 +52,7 @@ starGL.setVertexArray({ location: starPositionLocation, size: 3, type: gl.FLOAT 
 
 // 별 유니폼 ---------------------
 const starUTimeLocation = starGL.getUniformLocation("u_time");
-starGL.sendUniformStruct("u_star_v", STAR.UNIFORMS_V);
-starGL.sendUniformStruct("u_star_f", STAR.UNIFORMS_F);
+gl.uniform3fv(starGL.getUniformLocation("u_colors"), STAR.U_COLORS);
 
 // 홈 배경화면 render ---------------------
 // 오로라 render

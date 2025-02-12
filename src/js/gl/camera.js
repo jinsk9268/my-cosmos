@@ -1,39 +1,40 @@
 import { mat4 } from "gl-matrix";
 import { PERSPECTIVE_CAMERA } from "@/js/constants";
 
-const { FOV, NEAR, FAR, EYE, CENTER, UP, SPEED_RATE, ZOOM_MIN, ZOOM_MAX, ZOOM_OFFSET } =
+const { FOV, NEAR, FAR, EYE_START, CENTER, UP, SPEED_RATE, ZOOM_MIN, ZOOM_MAX, ZOOM_OFFSET } =
 	PERSPECTIVE_CAMERA;
 
 class Camera {
 	/**
-	 *
+	 * 카메라 세팅 설정
 	 * @param {WebGL2RenderingContext} gl
 	 */
 	constructor(gl) {
-		this.projectionMatrix = mat4.create();
-		this.viewMatrix = mat4.create();
-		this.viewWithoutTranslateMatrix = mat4.create();
-		this.aspect = gl.canvas.width / gl.canvas.height;
-
-		this.initCameraVars();
-
-		this.perspective();
-		this.lookAt();
-	}
-
-	initCameraVars() {
 		this.fov = FOV;
 		this.near = NEAR;
 		this.far = FAR;
-
-		this.cameraPos = EYE;
-		this.targetPos = CENTER;
-		this.up = UP;
-
 		this.speed = SPEED_RATE;
 		this.zoomMin = ZOOM_MIN;
 		this.zoomMax = ZOOM_MAX;
 		this.zoomOffset = ZOOM_OFFSET;
+
+		this.initCameraAspect(gl);
+		this.initCamerSetting();
+		this.initializeCamera();
+	}
+
+	initCameraAspect(gl) {
+		this.aspect = gl.canvas.width / gl.canvas.height;
+	}
+
+	initCamerSetting() {
+		this.projectionMatrix = mat4.create();
+		this.viewMatrix = mat4.create();
+		this.viewWithoutTranslateMatrix = mat4.create();
+
+		this.cameraPos = EYE_START.slice();
+		this.targetPos = CENTER;
+		this.up = UP;
 	}
 
 	perspective() {
@@ -47,6 +48,11 @@ class Camera {
 		this.viewWithoutTranslateMatrix[12] = 0;
 		this.viewWithoutTranslateMatrix[13] = 0;
 		this.viewWithoutTranslateMatrix[14] = 0;
+	}
+
+	initializeCamera() {
+		this.perspective();
+		this.lookAt();
 	}
 
 	/**
@@ -67,6 +73,11 @@ class Camera {
 			Math.min(this.cameraPos[2] + delta * this.speed, this.zoomMax),
 		);
 
+		this.lookAt();
+	}
+
+	updateZ(uTime) {
+		this.cameraPos[2] = this.cameraPos[2] + uTime * 0.0005;
 		this.lookAt();
 	}
 }

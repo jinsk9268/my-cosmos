@@ -1,12 +1,4 @@
-import { throwError, isNull } from "@/js/utils.js";
-import {
-	createShader,
-	createProgram,
-	getUniformType,
-	numArrToF32Arr,
-	isMultiDemensionArr,
-} from "@/js/gl/glUtils.js";
-import { ERROR_MSG } from "@/js/constants.js";
+import { throwError } from "@/js/utils.js";
 
 class GLPipeline {
 	/**
@@ -17,11 +9,46 @@ class GLPipeline {
 	 */
 	constructor(gl, vertexSource, fragmentSource) {
 		this.gl = gl;
-		this.vertexShader = createShader(gl, vertexSource, gl.VERTEX_SHADER);
-		this.fragmentShader = createShader(gl, fragmentSource, gl.FRAGMENT_SHADER);
-		this.program = createProgram(gl, this.vertexShader, this.fragmentShader);
+		this.vertexShader = this.createShader(vertexSource, gl.VERTEX_SHADER);
+		this.fragmentShader = this.createShader(fragmentSource, gl.FRAGMENT_SHADER);
+		this.program = this.createProgram(this.vertexShader, this.fragmentShader);
 		this.vertexBuffer = this.gl.createBuffer();
 		this.vertexArray = this.gl.createVertexArray();
+	}
+
+	/**
+	 * @param {string} source GLSL 소스 코드
+	 * @param {gl.VERTEX_SHADER | gl.FRAGMENT_SHADER} type
+	 * @returns {WebGLShader} shader 생성 성공 시 vertexShader or fragmentShader 반환 | 실패 시 에러 처리
+	 */
+	createShader(source, type) {
+		const shader = this.gl.createShader(type);
+		this.gl.shaderSource(shader, source);
+		this.gl.compileShader(shader);
+
+		if (this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) return shader;
+
+		const errorMsg = this.gl.getShaderInfoLog(shader);
+		this.gl.deleteShader(shader);
+		throwError(errorMsg);
+	}
+
+	/**
+	 * @param {WebGLShader} vertexShader
+	 * @param {WebGLShader} fragmentShader
+	 * @returns {WebGLProgram} program 생성 성공 시 program 반환 | 실패 시 에러 처리
+	 */
+	createProgram(vertexShader, fragmentShader) {
+		const program = this.gl.createProgram();
+		this.gl.attachShader(program, vertexShader);
+		this.gl.attachShader(program, fragmentShader);
+		this.gl.linkProgram(program);
+
+		if (this.gl.getProgramParameter(program, this.gl.LINK_STATUS)) return program;
+
+		const errorMsg = this.gl.getProgramInfoLog(program);
+		this.gl.deleteProgram(program);
+		throwError(errorMsg);
 	}
 
 	useProgram() {
@@ -42,36 +69,6 @@ class GLPipeline {
 	 */
 	getUniformLocation(name) {
 		return this.gl.getUniformLocation(this.program, name);
-	}
-
-	/**
-	 * @param {string} name
-	 * @param {object} [struct]
-	 */
-	sendUniformStruct(name, struct = {}) {
-		Object.entries(struct).forEach(([key, value]) => {
-			const type = getUniformType(value);
-
-			if (isNull(type)) throwError(`${key} ${ERROR_MSG.NO_TYPE}`);
-
-			if (isMultiDemensionArr(value)) {
-				const flatArr = value.flat();
-				const arrHasFloat = flatArr.some((num) => !Number.isInteger(num));
-				value = arrHasFloat ? numArrToF32Arr(flatArr) : flatArr;
-			}
-
-			this.gl[type](this.getUniformLocation(`${name}.${key}`), value);
-		});
-	}
-
-	/**
-	 * @param {Object} param
-	 * @param {GLint} param.location
-	 * @param {boolean} [param.transpose]
-	 * @param {Float32List} param.data
-	 */
-	sendUniformMatrix({ location, transpose = false, data }) {
-		this.gl.uniformMatrix4fv(location, transpose, data);
 	}
 
 	/**
@@ -109,6 +106,14 @@ class GLPipeline {
 	bindAndDrawArrays({ module, first = 0, count }) {
 		this.gl.bindVertexArray(this.vertexArray);
 		this.gl.drawArrays(module, first, count);
+	}
+
+	deleteGLDatas() {
+		this.gl.deleteBuffer(this.vertexBuffer);
+		this.vertexBuffer = this.gl.createBuffer();
+
+		this.gl.deleteVertexArray(this.vertexArray);
+		this.vertexArray = this.gl.createVertexArray();
 	}
 }
 

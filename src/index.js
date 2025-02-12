@@ -5,7 +5,6 @@ import galaxyFragmentSource from "@/shaders/galaxyFragmentShader.glsl";
 import Camera from "@/js/gl/Camera.js";
 import ScreenEvent from "@/js/events/ScreenEvent.js";
 import CameraEvent from "@/js/events/CameraEvent.js";
-import Sphere from "@/js/shape/Sphere.js";
 import FermatSprial from "@/js/shape/FermatSpiral.js";
 import SpiralCore from "@/js/shape/SpiralCore";
 import { useTextureStore } from "@/js/store.js";
@@ -24,13 +23,12 @@ galaxyGL.useProgram();
 // 은하 모양 생성
 const { setGalaxyShapes } = useTextureStore.getState();
 setGalaxyShapes([
-	new Sphere(SHAPE_TYPE.SPHERE),
 	new FermatSprial(SHAPE_TYPE.FERMAT_SPIRAL_TORUS),
 	new FermatSprial(SHAPE_TYPE.FERMAT_SPIRAL_WHIRL),
-	new FermatSprial(SHAPE_TYPE.FERMAT_SPIRAL_FLOWER),
 	new SpiralCore(SHAPE_TYPE.SPIRAL_ARM_2),
 	new SpiralCore(SHAPE_TYPE.SPIRAL_ARM_4),
 	new SpiralCore(SHAPE_TYPE.SPIRAL_ARM_5),
+	new SpiralCore(SHAPE_TYPE.SPIRAL_ARM_6),
 ]);
 
 // 카메라
