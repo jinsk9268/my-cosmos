@@ -1,5 +1,5 @@
 import Shape from "@/js/shape/Shape.js";
-import { gaussianRandom } from "@/js/utils.js";
+import { gaussianRandom, getNoise3d } from "@/js/utils.js";
 
 class SpiralCore extends Shape {
 	/**
@@ -53,7 +53,7 @@ class SpiralCore extends Shape {
 	calculateXYZ(startX, endX, startY, endY) {
 		const baseX = gaussianRandom(startX, endX);
 		const baseY = gaussianRandom(startY, endY);
-		const baseZ = gaussianRandom(-this.thickness, this.thickness);
+		const baseZ = gaussianRandom(-this.thickness * 0.5, this.thickness) + this.thickness * 0.5;
 
 		return this.calculateNoiseXYZ(baseX, baseY, baseZ);
 	}
@@ -66,8 +66,9 @@ class SpiralCore extends Shape {
 
 		const baseX = radius * Math.cos(theta);
 		const baseY = radius * Math.sin(theta);
+		const baseZ = getNoise3d(baseX, baseY, theta) * 0.47;
 
-		return this.calculateNoiseXYZ(baseX, baseY, gz);
+		return this.calculateNoiseXYZ(baseX, baseY, baseZ);
 	}
 
 	generatePosition() {

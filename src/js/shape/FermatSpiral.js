@@ -1,5 +1,5 @@
 import Shape from "@/js/shape/Shape.js";
-import { randomFloat } from "@/js/utils.js";
+import { gaussianRandom } from "@/js/utils.js";
 
 class FermatSpiral extends Shape {
 	/**
@@ -34,9 +34,9 @@ class FermatSpiral extends Shape {
 	}
 
 	calculateXYZ(radius, theta) {
-		const baseX = radius * Math.cos(theta);
+		const baseX = radius * Math.cos(theta) + gaussianRandom();
 		const baseY = radius * Math.sin(theta);
-		const baseZ = randomFloat(-1, 1);
+		const baseZ = gaussianRandom(-0.5, 1);
 
 		return this.calculateNoiseXYZ(baseX, baseY, baseZ);
 	}

@@ -24,7 +24,7 @@ export const PERSPECTIVE_CAMERA = {
 	NEAR: 0.1,
 	FAR: 100,
 	EYE_START: [0, -20, 1],
-	EYE_END: [0, -25, 35],
+	EYE_END: [0, -25, 30],
 	CENTER: [0, -2, 0],
 	UP: [0, 1, 0],
 	SPEED_RATE: 0.01,
@@ -86,14 +86,6 @@ export const MSG = {
 
 // 은하 모형 관련 상수 ---------------------
 export const SHAPE_TYPE = {
-	FERMAT_SPIRAL_CYCLONE: {
-		qty: 8000,
-		needTexture: true,
-		thetaOffset: 0.55,
-		radiusMin: 50,
-		scale: 6.5,
-		twoWay: true,
-	},
 	FERMAT_SPIRAL_TORUS: {
 		qty: 8000,
 		needTexture: true,
@@ -117,8 +109,8 @@ export const SHAPE_TYPE = {
 		thickness: 1,
 		coreXDist: 2,
 		coreYDist: 2,
-		outerCoreXDist: 8,
-		outerCoreYDist: 8,
+		outerCoreXDist: 10,
+		outerCoreYDist: 10,
 		armXDist: 4,
 		armYDist: 2,
 		armXMean: 8,

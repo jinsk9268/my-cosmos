@@ -1,5 +1,5 @@
-import { createNoise3D } from "simplex-noise";
 import { useTextureStore } from "@/js/store.js";
+import { getNoise3d } from "@/js/utils.js";
 
 class Shape {
 	/**
@@ -19,8 +19,7 @@ class Shape {
 	}
 
 	calculateNoiseXYZ(baseX, baseY, baseZ) {
-		const noise3d = createNoise3D(Math.random);
-		const noiseFactor = noise3d(baseX, baseY, baseZ);
+		const noiseFactor = getNoise3d(baseX, baseY, baseZ);
 
 		const x = baseX + noiseFactor * 0.5;
 		const y = baseY + noiseFactor * 0.5;

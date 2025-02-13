@@ -1,3 +1,5 @@
+import { createNoise3D } from "simplex-noise";
+
 /**
  * @param {boolean} isError
  * @param {string} message
@@ -68,4 +70,15 @@ export function gaussianRandom(mean = 0, stdev = 1) {
 	const z = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
 
 	return z * stdev + mean;
+}
+
+/**
+ * @param {number} x
+ * @param {number} y
+ * @param {number} z
+ * @returns {number} noise 값 반환
+ */
+export function getNoise3d(x, y, z) {
+	const noise3d = createNoise3D(Math.random);
+	return noise3d(x, y, z);
 }
