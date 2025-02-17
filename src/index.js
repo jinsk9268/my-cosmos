@@ -1,5 +1,7 @@
 import CanvasGL from "@/js/canvas/CanvasGL.js";
 import GLPipeline from "@/js/gl/GLPipeline.js";
+import cosmosVertexSource from "@/shaders/cosmosVertexShader.glsl";
+import cosmosFragmentSource from "@/shaders/cosmosFragmentShader.glsl";
 import galaxyVertexSource from "@/shaders/galaxyVertexShader.glsl";
 import galaxyFragmentSource from "@/shaders/galaxyFragmentShader.glsl";
 import Camera from "@/js/gl/Camera.js";
@@ -17,6 +19,8 @@ const canvas = new CanvasGL("cosmos-canvas");
 const gl = canvas.gl;
 
 // GL 생성
+const cosmosGL = new GLPipeline(gl, cosmosVertexSource, cosmosFragmentSource);
+cosmosGL.useProgram();
 const galaxyGL = new GLPipeline(gl, galaxyVertexSource, galaxyFragmentSource);
 galaxyGL.useProgram();
 
@@ -35,7 +39,7 @@ setGalaxyShapes([
 const perspCamera = new Camera(gl);
 
 // 이벤트
-const screenEvent = new ScreenEvent(canvas, galaxyGL, perspCamera);
+const screenEvent = new ScreenEvent(canvas, cosmosGL, galaxyGL, perspCamera);
 const cameraEvent = new CameraEvent(perspCamera);
 
 // 이벤트 리스너 등록

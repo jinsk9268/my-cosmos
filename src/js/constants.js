@@ -23,7 +23,7 @@ export const PERSPECTIVE_CAMERA = {
 	FOV: degreeToRadian(60),
 	NEAR: 0.1,
 	FAR: 100,
-	EYE_START: [0, -20, 1],
+	EYE_START: [0, -25, 1],
 	EYE_END: [0, -25, 30],
 	CENTER: [0, -2, 0],
 	UP: [0, 1, 0],
@@ -44,15 +44,11 @@ export const TEXTURE = {
 	CANVAS_SIZE_RATE: 0.1,
 };
 
-// 홈 background 관련 상수 ---------------------
-export const BACKGROUND = {
-	// aurora
-	AURORA: {
-		POS: numArrToF32Arr([-1, -1, 1, -1, -1, 1, 1, 1]),
-	},
-	// star
+// background 관련 상수 ---------------------
+export const HOME_BACKGROUND = {
+	POS: numArrToF32Arr([-1, -1, 1, -1, -1, 1, 1, 1]), // 좌하, 우하, 좌상, 우상
 	STAR: {
-		QTY: 2000,
+		QTY: 4000,
 		THETA_OFFSET: 0.55,
 		RADIUS_MIN: 0,
 		RADIUS_SCALE: 2,
@@ -66,6 +62,24 @@ export const BACKGROUND = {
 				.flat(),
 		),
 	},
+};
+
+export const COMSMOS_BACKGROUND = {
+	STAR_QTY: 25000,
+	POS: numArrToF32Arr([
+		// 앞쪽 (좌상, 우상, 좌하, 우하)
+		-1, 1, 1, 1, 1, 1, -1, -1, 1, 1, -1, 1,
+		// 오른쪽 (좌상, 우상, 좌하, 우하)
+		1, 1, 1, 1, 1, -1, 1, -1, 1, 1, -1, -1,
+		// 뒤쪽 (좌상, 우상, 좌하, 우하)
+		1, 1, -1, -1, 1, -1, 1, -1, -1, -1, -1, -1,
+		// 왼쪽 (좌상, 우상, 좌하, 우하)
+		-1, 1, -1, -1, 1, 1, -1, -1, -1, -1, -1, 1,
+		// 위쪽 (좌상, 우상, 좌하, 우하)
+		-1, 1, -1, 1, 1, -1, -1, 1, 1, 1, 1, 1,
+		// 아래쪽 (좌상, 우상, 좌하, 우하)
+		-1, -1, -1, -1, -1, 1, 1, -1, -1, 1, -1, 1,
+	]),
 };
 
 // 에러 메시지 상수 ---------------------

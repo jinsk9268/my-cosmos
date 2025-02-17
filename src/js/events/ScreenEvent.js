@@ -4,8 +4,8 @@ import GLPipeline from "@/js/gl/GLPipeline";
 import Camera from "@/js/gl/Camera";
 import GLTexture from "@/js/gl/GLTexture";
 import Model from "@/js/gl/Model";
-import { isNull, randomInt } from "@/js/utils.js";
-import { LOCATION_HASH, PERSPECTIVE_CAMERA, MSG } from "@/js/constants.js";
+import { isNull, randomFloat, randomInt } from "@/js/utils.js";
+import { LOCATION_HASH, PERSPECTIVE_CAMERA, MSG, COMSMOS_BACKGROUND } from "@/js/constants.js";
 
 const { HOME, MY_COSMOS, HASH_MY_COSMOS } = LOCATION_HASH;
 
@@ -13,11 +13,33 @@ class ScreenEvent {
 	/**
 	 * 화면에서 발생하는 이벤트
 	 * @param {HTMLCanvasElement} canvas
+	 * @param {GLPipeline} cosmosGL
 	 * @param {GLPipeline} galaxyGL
 	 * @param {Camera} perspCamera
-@param{}
 	 */
-	constructor(canvas, galaxyGL, perspCamera) {
+	constructor(canvas, cosmosGL, galaxyGL, perspCamera) {
+		this.getDomElements();
+
+		this.canvas = canvas;
+		this.gl = this.canvas.gl;
+		this.perspCamera = perspCamera;
+
+		this.cosmosGL = cosmosGL;
+
+		this.galaxyGL = galaxyGL;
+		this.galaxyModel = new Model();
+		this.galaxyTexture = new GLTexture(this.gl);
+		this.galaxyShape = null;
+
+		this.isAnimationStart = true;
+		this.animationStartTime = 0;
+
+		this.getCosmosLocations();
+		this.getGalaxyLocations();
+	}
+
+	// 멤버 변수 생성 ---------------------
+	getDomElements() {
 		this.domElements = {
 			body: document.body,
 			home: document.getElementById("home"),
@@ -26,23 +48,29 @@ class ScreenEvent {
 			inputCompleteBtn: document.getElementById("input-complete-btn"),
 			myCosmos: document.getElementById("my-cosmos"),
 		};
+	}
 
-		this.canvas = canvas;
-		this.gl = this.canvas.gl;
-		this.galaxyGL = galaxyGL;
-		this.perspCamera = perspCamera;
-		this.galaxyModel = new Model();
-		this.galaxyTexture = new GLTexture(this.gl);
-		this.galaxyShape = null;
-		this.isAnimationStart = true;
-		this.animationStartTime = 0;
+	getCosmosLocations() {
+		this.cosmosAttribLoc = {
+			a_position: this.cosmosGL.getAttribLocation("a_position"),
+		};
 
-		this.attribLocations = {
+		this.cosmosUniformLoc = {
+			u_projection_mat: this.cosmosGL.getUniformLocation("u_projection_mat"),
+			u_view_without_translate_mat: this.cosmosGL.getUniformLocation(
+				"u_view_without_translate_mat",
+			),
+			u_time: this.cosmosGL.getUniformLocation("u_time"),
+		};
+	}
+
+	getGalaxyLocations() {
+		this.galaxyAttribLoc = {
 			a_position: this.galaxyGL.getAttribLocation("a_position"),
 			a_tex_idx: this.galaxyGL.getAttribLocation("a_tex_idx"),
 		};
 
-		this.uniformLocations = {
+		this.galaxyUniformLoc = {
 			u_projection_mat: this.galaxyGL.getUniformLocation("u_projection_mat"),
 			u_view_mat: this.galaxyGL.getUniformLocation("u_view_mat"),
 			u_model_mat: this.galaxyGL.getUniformLocation("u_model_mat"),
@@ -130,7 +158,23 @@ class ScreenEvent {
 	}
 
 	// 이벤트 리스너 (데이터 gl 바인딩 및 화면전환) ---------------------
-	generateTextureDatas(userInput) {
+	generateCosmosGLDatas() {
+		const starPosition = new Float32Array(COMSMOS_BACKGROUND.STAR_QTY * 3);
+		for (let i = 0; i < starPosition.length; i += 3) {
+			starPosition[i] = randomFloat(-100, 100);
+			starPosition[i + 1] = randomFloat(-100, 100);
+			starPosition[i + 2] = randomFloat(-100, 100);
+		}
+		this.cosmosGL.setVertexBuffer({ data: starPosition });
+
+		this.cosmosGL.setVertexArray({
+			location: this.cosmosAttribLoc.a_position,
+			size: 3,
+			type: this.gl.FLOAT,
+		});
+	}
+
+	generateGalaxyTextureDatas(userInput) {
 		// 글자별 캔버스 생성
 		const { setTextCanvasDatas } = useTextureStore.getState();
 		const textures = userInput.split("");
@@ -142,20 +186,20 @@ class ScreenEvent {
 		this.galaxyTexture.generateGLTexture2DArray();
 	}
 
-	generateGLDatas() {
+	generateGalaxyGLDatas() {
 		// 버퍼 생성
 		this.galaxyGL.setVertexBuffer({ data: this.galaxyShape.positionTextures });
 
 		// vao 생성
 		this.galaxyGL.setVertexArray({
-			location: this.attribLocations.a_position,
+			location: this.galaxyAttribLoc.a_position,
 			size: 3,
 			type: this.gl.FLOAT,
 			stride: 4 * Float32Array.BYTES_PER_ELEMENT,
 			offset: 0,
 		});
 		this.galaxyGL.setVertexArray({
-			location: this.attribLocations.a_tex_idx,
+			location: this.galaxyAttribLoc.a_tex_idx,
 			size: 1,
 			type: this.gl.FLOAT,
 			stride: 4 * Float32Array.BYTES_PER_ELEMENT,
@@ -163,22 +207,31 @@ class ScreenEvent {
 		});
 	}
 
-	animateCosmos(uTime) {
-		if (this.isAnimationStart) {
-			this.animationStartTime = uTime;
-			this.isAnimationStart = false;
-		}
-		const { u_projection_mat, u_view_mat, u_model_mat, u_textures } = this.uniformLocations;
+	renderBackground(uTime) {
+		const { u_projection_mat, u_view_without_translate_mat, u_time } = this.cosmosUniformLoc;
+		const { projectionMatrix, viewWithoutTranslateMatrix } = this.perspCamera;
+
+		this.cosmosGL.useProgram();
+		this.gl.uniformMatrix4fv(u_projection_mat, false, projectionMatrix);
+		this.gl.uniformMatrix4fv(u_view_without_translate_mat, false, viewWithoutTranslateMatrix);
+		this.gl.uniform1f(u_time, uTime);
+		this.cosmosGL.bindAndDrawArrays({
+			module: this.gl.POINTS,
+			count: COMSMOS_BACKGROUND.STAR_QTY,
+		});
+	}
+
+	renderCosmos(uTime) {
+		const { u_projection_mat, u_view_mat, u_model_mat, u_time, u_resolution, u_textures } =
+			this.galaxyUniformLoc;
 		const { projectionMatrix, viewMatrix } = this.perspCamera;
+
+		this.galaxyGL.useProgram();
 		this.gl.uniformMatrix4fv(u_projection_mat, false, projectionMatrix);
 		this.gl.uniformMatrix4fv(u_view_mat, false, viewMatrix);
 		this.gl.uniformMatrix4fv(u_model_mat, false, this.galaxyModel.modelMatrix);
-		this.gl.uniform1f(this.uniformLocations.u_time, uTime - this.animationStartTime);
-		this.gl.uniform2f(
-			this.uniformLocations.u_resolution,
-			this.gl.canvas.width,
-			this.gl.canvas.height,
-		);
+		this.gl.uniform1f(u_time, uTime - this.animationStartTime);
+		this.gl.uniform2f(u_resolution, this.gl.canvas.width, this.gl.canvas.height);
 
 		this.galaxyTexture.activeTexture2DArray(this.gl.TEXTURE0, u_textures, 0);
 
@@ -187,6 +240,18 @@ class ScreenEvent {
 		this.gl.depthMask(false);
 
 		this.galaxyGL.bindAndDrawArrays({ module: this.gl.POINTS, count: this.galaxyShape.qty });
+	}
+
+	animateCosmos(uTime) {
+		if (this.isAnimationStart) {
+			this.animationStartTime = uTime;
+			this.isAnimationStart = false;
+		}
+		this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
+		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+
+		this.renderBackground(uTime);
+		this.renderCosmos(uTime);
 
 		this.galaxyModel.rotateZ(0.1);
 
@@ -203,9 +268,11 @@ class ScreenEvent {
 		}
 
 		// galaxy 생성에 필요한 데이터 생성
+		this.generateCosmosGLDatas();
+
 		this.galaxyShape = this.getGalaxyShape();
-		this.generateTextureDatas(userInput);
-		this.generateGLDatas();
+		this.generateGalaxyTextureDatas(userInput);
+		this.generateGalaxyGLDatas();
 
 		// 애니메이션 바인딩
 		this.canvas.animationFunc = this.animateCosmos.bind(this);

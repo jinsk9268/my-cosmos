@@ -10,12 +10,13 @@ uniform float u_time;
 
 out float v_tex_idx;
 
-const float TIME_FACTOR = 40.0;
+const float TIME_FACTOR = 45.0;
 const float TIME_START = 0.0;
 const float TIME_END = 1.0;
 const float SPREAD_START = 6.0;
 const float SPREAD_END = 1.0;
 const float POINT_BASE_SIZE = 60.0;
+const float PERSPECTIVE_SCALE = 0.1;
 
 void main() {
   v_tex_idx = a_tex_idx;
@@ -31,5 +32,6 @@ void main() {
   gl_Position = u_projection_mat * u_view_mat * u_model_mat * position;
   
   float distance_from_center = length(a_position.xy);
-  gl_PointSize = POINT_BASE_SIZE - abs(distance_from_center);
+  float perspective_factor = 1.0 / (0.5 + distance_from_center * PERSPECTIVE_SCALE);
+  gl_PointSize = POINT_BASE_SIZE * perspective_factor;
 }

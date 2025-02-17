@@ -6,10 +6,10 @@ import starFragmentSource from "@/home-background/shaders/starFragmentShader.gls
 import auroraVertexSource from "@/home-background/shaders/auroraVertexShader.glsl";
 import auroraFragmentSource from "@/home-background/shaders/auroraFragmentShader.glsl";
 import GLPipeline from "@/js/gl/GLPipeline.js";
-import { BACKGROUND, MSG } from "@/js/constants.js";
+import { HOME_BACKGROUND, MSG } from "@/js/constants.js";
 import { isNull } from "@/js/utils.js";
 
-const { AURORA, STAR } = BACKGROUND;
+const { STAR } = HOME_BACKGROUND;
 
 // Canvas ---------------------
 const canvas = new CanvasGL("bg_canvas");
@@ -20,7 +20,7 @@ const auroraGL = new GLPipeline(gl, auroraVertexSource, auroraFragmentSource);
 auroraGL.useProgram();
 
 // 오로라 버퍼 생성
-auroraGL.setVertexBuffer({ data: AURORA.POS });
+auroraGL.setVertexBuffer({ data: HOME_BACKGROUND.POS });
 
 // 오로라 vertexArray 생성
 const auroraPositionLocation = auroraGL.getAttribLocation("a_position");

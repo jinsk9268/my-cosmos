@@ -7,15 +7,12 @@ in float v_tex_idx;
 
 uniform sampler2DArray u_textures;
 uniform vec2 u_resolution;
-uniform float u_time;
 
 out vec4 f_color;
 
 const float GLOW_FACTOR = 3.0;
 const vec3 GLOW_COLOR = vec3(1.0, 0.5, 0.5);
 const float TIME_SPEED = 0.4;
-const float MIN_GLOW = 0.2;
-const float MAX_GLOW = 0.8;
 
 void main() {
   vec2 tex_coord = gl_PointCoord;
@@ -26,6 +23,5 @@ void main() {
   float glow = exp(-distance * GLOW_FACTOR);
 
   vec3 color = vec3(uv, 0.5) + glow * GLOW_COLOR;
-
-  f_color = tex * vec4(color, cos(u_time * TIME_SPEED) * MIN_GLOW + MAX_GLOW);
+  f_color = tex * vec4(color, 1.0);
 }
