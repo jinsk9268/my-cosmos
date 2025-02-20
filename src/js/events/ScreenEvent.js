@@ -221,7 +221,7 @@ class ScreenEvent {
 		});
 	}
 
-	renderCosmos(uTime) {
+	renderGalaxy(uTime) {
 		const { u_projection_mat, u_view_mat, u_model_mat, u_time, u_resolution, u_textures } =
 			this.galaxyUniformLoc;
 		const { projectionMatrix, viewMatrix } = this.perspCamera;
@@ -251,11 +251,11 @@ class ScreenEvent {
 		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
 		this.renderBackground(uTime);
-		this.renderCosmos(uTime);
+		this.renderGalaxy(uTime);
 
 		this.galaxyModel.rotateZ(0.1);
 
-		if (this.perspCamera.cameraPos[2] < PERSPECTIVE_CAMERA.EYE_END[2]) {
+		if (this.perspCamera.cameraPos[2] < PERSPECTIVE_CAMERA.EYE_END_Z) {
 			this.perspCamera.updateZ(uTime);
 		}
 	}

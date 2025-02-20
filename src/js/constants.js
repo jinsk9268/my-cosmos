@@ -24,7 +24,7 @@ export const PERSPECTIVE_CAMERA = {
 	NEAR: 0.1,
 	FAR: 100,
 	EYE_START: [0, -25, 1],
-	EYE_END: [0, -25, 30],
+	EYE_END_Z: 30,
 	CENTER: [0, -2, 0],
 	UP: [0, 1, 0],
 	SPEED_RATE: 0.01,
