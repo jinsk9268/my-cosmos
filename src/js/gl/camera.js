@@ -1,8 +1,19 @@
 import { mat4 } from "gl-matrix";
 import { PERSPECTIVE_CAMERA } from "@/js/constants";
 
-const { FOV, NEAR, FAR, EYE_START, CENTER, UP, SPEED_RATE, ZOOM_MIN, ZOOM_MAX, ZOOM_OFFSET } =
-	PERSPECTIVE_CAMERA;
+const {
+	FOV,
+	NEAR,
+	FAR,
+	EYE_START,
+	CENTER,
+	UP,
+	SPEED_RATE,
+	ZOOM_MIN,
+	ZOOM_MAX,
+	ZOOM_OFFSET,
+	Z_SPEED_FACTOR,
+} = PERSPECTIVE_CAMERA;
 
 class Camera {
 	/**
@@ -59,9 +70,10 @@ class Camera {
 	 * @param {number} deltaX
 	 * @param {number} deltaY
 	 */
-	rotateXY(deltaX, deltaY) {
-		mat4.rotateX(this.viewMatrix, this.viewMatrix, deltaX * this.speed);
-		mat4.rotateY(this.viewMatrix, this.viewMatrix, deltaY * this.speed);
+	translateXY(deltaX, deltaY) {
+		this.cameraPos[0] += deltaX * this.speed;
+		this.cameraPos[1] += deltaY * this.speed;
+		this.lookAt();
 	}
 
 	/**
@@ -77,7 +89,7 @@ class Camera {
 	}
 
 	updateZ(uTime) {
-		this.cameraPos[2] = this.cameraPos[2] + uTime * 0.0005;
+		this.cameraPos[2] = this.cameraPos[2] + uTime * Z_SPEED_FACTOR;
 		this.lookAt();
 	}
 }

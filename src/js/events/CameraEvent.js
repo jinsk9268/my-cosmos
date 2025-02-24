@@ -27,7 +27,7 @@ class CameraEvent {
 	 */
 	handleMousemove(e) {
 		if (this.isDrag) {
-			this.camera.rotateXY(e.movementX, e.movementY);
+			this.camera.translateXY(e.movementX, e.movementY);
 		}
 	}
 
@@ -45,7 +45,7 @@ class CameraEvent {
 			const { clientX, clientY } = e.touches[0];
 			const deltaX = clientX - this.prevTouch.x;
 			const deltaY = clientY - this.prevTouch.y;
-			this.camera.rotateXY(deltaX, deltaY);
+			this.camera.translateXY(deltaX, deltaY);
 
 			this.prevTouch.x = clientX;
 			this.prevTouch.y = clientY;
