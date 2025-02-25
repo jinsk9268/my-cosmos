@@ -18,6 +18,12 @@ class Shape {
 		}
 	}
 
+	/**
+	 * @param {number} baseX
+	 * @param {number} baseY
+	 * @param {number} baseZ
+	 * @returns {object} x, y, z에 노이즈 값 추가하여 반환
+	 */
 	calculateNoiseXYZ(baseX, baseY, baseZ) {
 		const noiseFactor = getNoise3d(baseX, baseY, baseZ);
 

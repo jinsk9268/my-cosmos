@@ -5,6 +5,10 @@ import { TEXTURE, ERROR_MSG } from "@/js/constants.js";
 const { FONT_FAMILY, DIVISOR_RATE, CANVAS_SIZE_RATE } = TEXTURE;
 
 class CanvasTexture extends CanvasOption {
+	/**
+	 * 캔버스 2D를 활용한 텍스쳐를 생성
+	 * @param {string} inputValue
+	 */
 	constructor(inputValue) {
 		super();
 		this.ctx = this.canvas.getContext("2d", { willReadFrequently: true });

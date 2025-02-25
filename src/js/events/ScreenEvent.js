@@ -207,6 +207,9 @@ class ScreenEvent {
 		});
 	}
 
+	/**
+	 * @param {number} uTime
+	 */
 	renderBackground(uTime) {
 		const { u_projection_mat, u_view_without_translate_mat, u_time } = this.cosmosUniformLoc;
 		const { projectionMatrix, viewWithoutTranslateMatrix } = this.perspCamera;
@@ -221,6 +224,9 @@ class ScreenEvent {
 		});
 	}
 
+	/**
+	 * @param {number} uTime
+	 */
 	renderGalaxy(uTime) {
 		const { u_projection_mat, u_view_mat, u_model_mat, u_time, u_resolution, u_textures } =
 			this.galaxyUniformLoc;
@@ -242,6 +248,9 @@ class ScreenEvent {
 		this.galaxyGL.bindAndDrawArrays({ module: this.gl.POINTS, count: this.galaxyShape.qty });
 	}
 
+	/**
+	 * @param {number} uTime
+	 */
 	animateCosmos(uTime) {
 		if (this.isAnimationStart) {
 			this.animationStartTime = uTime;

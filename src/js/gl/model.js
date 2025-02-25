@@ -3,6 +3,9 @@ import { degreeToRadian } from "@/js/utils.js";
 import { MODEL } from "@/js/constants.js";
 
 class Model {
+	/**
+	 * 모델 세팅 설정
+	 */
 	constructor() {
 		this.modelMatrix = mat4.create();
 		this.initModelVars();

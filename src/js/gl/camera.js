@@ -34,6 +34,9 @@ class Camera {
 		this.initializeCamera();
 	}
 
+	/**
+	 * @param {WebGL2RenderingContext} gl
+	 */
 	initCameraAspect(gl) {
 		this.aspect = gl.canvas.width / gl.canvas.height;
 	}
@@ -88,6 +91,9 @@ class Camera {
 		this.lookAt();
 	}
 
+	/**
+	 * @param {number} uTime
+	 */
 	updateZ(uTime) {
 		this.cameraPos[2] = this.cameraPos[2] + uTime * Z_SPEED_FACTOR;
 		this.lookAt();
