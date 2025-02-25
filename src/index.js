@@ -8,7 +8,7 @@ import Camera from "@/js/gl/Camera.js";
 import ScreenEvent from "@/js/events/ScreenEvent.js";
 import CameraEvent from "@/js/events/CameraEvent.js";
 import FermatSprial from "@/js/shape/FermatSpiral.js";
-import SpiralCore from "@/js/shape/SpiralCore";
+import SpiralCore from "@/js/shape/SpiralCore.js";
 import { useTextureStore } from "@/js/store.js";
 import { LOCATION_HASH, SHAPE_TYPE } from "@/js/constants.js";
 

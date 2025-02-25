@@ -1,5 +1,5 @@
 import CanvasOption from "@/js/canvas/CanvasOption.js";
-import { isNull } from "@/js/utils";
+import { isNull } from "@/js/utils.js";
 import { TEXTURE, ERROR_MSG } from "@/js/constants.js";
 
 const { FONT_FAMILY, DIVISOR_RATE, CANVAS_SIZE_RATE } = TEXTURE;

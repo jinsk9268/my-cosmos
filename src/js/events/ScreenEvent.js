@@ -1,9 +1,9 @@
 import { useTextureStore } from "@/js/store.js";
 import CanvasTexture from "@/js/canvas/CanvasTexture.js";
-import GLPipeline from "@/js/gl/GLPipeline";
-import Camera from "@/js/gl/Camera";
-import GLTexture from "@/js/gl/GLTexture";
-import Model from "@/js/gl/Model";
+import GLPipeline from "@/js/gl/GLPipeline.js";
+import Camera from "@/js/gl/Camera.js";
+import GLTexture from "@/js/gl/GLTexture.js";
+import Model from "@/js/gl/Model.js";
 import { isNull, randomFloat, randomInt } from "@/js/utils.js";
 import { LOCATION_HASH, PERSPECTIVE_CAMERA, MSG, COMSMOS_BACKGROUND } from "@/js/constants.js";
 

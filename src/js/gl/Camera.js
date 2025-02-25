@@ -1,5 +1,5 @@
 import { mat4 } from "gl-matrix";
-import { PERSPECTIVE_CAMERA } from "@/js/constants";
+import { PERSPECTIVE_CAMERA } from "@/js/constants.js";
 
 const {
 	FOV,
