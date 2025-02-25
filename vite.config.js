@@ -4,6 +4,14 @@ import glsl from "vite-plugin-glsl";
 
 export default defineConfig({
 	base: "/my-cosmos/",
+	build: {
+		rollupOptions: {
+			input: {
+				main: "index.html",
+				homeBackground: "home-background.html",
+			},
+		},
+	},
 	resolve: {
 		alias: {
 			"@": path.resolve(__dirname, "src"),
