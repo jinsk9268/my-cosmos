@@ -5,7 +5,13 @@ import Camera from "@/js/gl/Camera.js";
 import GLTexture from "@/js/gl/GLTexture.js";
 import Model from "@/js/gl/Model.js";
 import { isNull, randomFloat, randomInt } from "@/js/utils.js";
-import { LOCATION_HASH, PERSPECTIVE_CAMERA, MSG, COMSMOS_BACKGROUND } from "@/js/constants.js";
+import {
+	LOCATION_HASH,
+	PERSPECTIVE_CAMERA,
+	MSG,
+	COMSMOS_BACKGROUND,
+	SCREEN,
+} from "@/js/constants.js";
 
 const { HOME, MY_COSMOS, HASH_MY_COSMOS } = LOCATION_HASH;
 
@@ -33,6 +39,8 @@ class ScreenEvent {
 
 		this.isAnimationStart = true;
 		this.animationStartTime = 0;
+
+		this.resizeTimeout = undefined;
 
 		this.getCosmosLocations();
 		this.getGalaxyLocations();
@@ -106,7 +114,18 @@ class ScreenEvent {
 	}
 
 	handleResize() {
-		this.canvas.setCanvasGLSize();
+		clearTimeout(this.resizeTimeout);
+
+		this.resizeTimeout = setTimeout(() => {
+			this.canvas.setCanvasGLSize();
+			this.gl.uniform2f(
+				this.galaxyUniformLoc.u_resolution,
+				this.gl.canvas.width,
+				this.gl.canvas.height,
+			);
+			this.perspCamera.initCameraAspect(this.gl);
+			this.perspCamera.initializeCamera();
+		}, SCREEN.RESIZE_DELAY);
 	}
 
 	resetGalaxyGLDatas() {

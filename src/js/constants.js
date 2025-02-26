@@ -5,6 +5,7 @@ import { degreeToRadian } from "@/js/utils.js";
 export const SCREEN = {
 	MAX_DPR: 3,
 	IOS: /Mac|iPhone|iPad|iPod/i,
+	RESIZE_DELAY: 200,
 };
 
 export const ANIMATION = {
