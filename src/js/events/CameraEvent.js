@@ -59,11 +59,12 @@ class CameraEvent {
 
 			if (this.prevTouchDistance) {
 				const delta = currentDist - this.prevTouchDistance;
-				this.camera.zoomZ(this.zoomOffset * (delta > 0 ? -1 : 1));
+				this.camera.zoomZ(this.camera.zoomOffset * (delta >= 0 ? -1 : 1));
 			}
 
 			this.prevTouchDistance = currentDist;
 		}
+		this.camera.lookAt();
 	}
 
 	addEventListeners() {

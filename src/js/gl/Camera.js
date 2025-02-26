@@ -9,8 +9,8 @@ const {
 	CENTER,
 	UP,
 	SPEED_RATE,
-	ZOOM_MIN,
-	ZOOM_MAX,
+	ZOOM_NEAR,
+	ZOOM_FAR,
 	ZOOM_OFFSET,
 	Z_SPEED_FACTOR,
 } = PERSPECTIVE_CAMERA;
@@ -25,8 +25,8 @@ class Camera {
 		this.near = NEAR;
 		this.far = FAR;
 		this.speed = SPEED_RATE;
-		this.zoomMin = ZOOM_MIN;
-		this.zoomMax = ZOOM_MAX;
+		this.zoomNear = ZOOM_NEAR;
+		this.zoomFar = ZOOM_FAR;
 		this.zoomOffset = ZOOM_OFFSET;
 
 		this.initCameraAspect(gl);
@@ -83,10 +83,8 @@ class Camera {
 	 * @param {number} delta
 	 */
 	zoomZ(delta) {
-		this.cameraPos[2] = Math.max(
-			this.zoomMin,
-			Math.min(this.cameraPos[2] + delta * this.speed, this.zoomMax),
-		);
+		const newZ = this.cameraPos[2] + delta;
+		this.cameraPos[2] = Math.max(this.zoomNear, Math.min(newZ, this.zoomFar));
 
 		this.lookAt();
 	}
