@@ -14,9 +14,14 @@ class CanvasOption {
 	}
 
 	initCanvasOptionSizeVars(width = innerWidth, height = innerHeight) {
+		const isIOS = SCREEN.IOS.test(navigator.userAgent) && navigator.maxTouchPoints > 0;
+		const bottomBarHeightDiff = isIOS
+			? document.documentElement.scrollHeight - visualViewport.height
+			: 0;
+
 		this.dpr = Math.min(Math.round(devicePixelRatio), SCREEN.MAX_DPR) || 1;
 		this.canvasCssWidth = width;
-		this.canvasCssHeight = height;
+		this.canvasCssHeight = height + bottomBarHeightDiff;
 
 		this.canvas.style.width = `${this.canvasCssWidth}px`;
 		this.canvas.style.height = `${this.canvasCssHeight}px`;

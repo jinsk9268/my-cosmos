@@ -4,6 +4,7 @@ import { degreeToRadian } from "@/js/utils.js";
 // 공통 상수 ---------------------
 export const SCREEN = {
 	MAX_DPR: 3,
+	IOS: /Mac|iPhone|iPad|iPod/i,
 };
 
 export const ANIMATION = {
