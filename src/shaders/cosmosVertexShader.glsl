@@ -11,10 +11,10 @@ const float RANDOM_FACTOR = 43758.5453;
 const float STAR_MIN_SIZE = 1.0;
 const float STAR_MAX_SIZE = 2.0;
 const float SPEED_FACTOR = 0.5;
-const float FLICKER_NOISE_SCALE = 50.0;
+const float FLICKER_NOISE_SCALE = 60.0;
 const float PI = 3.14159265359;
-const float FLICKER_RANGE = 0.5;
-const float FLICKER_OFFSET = 0.5;
+const float FLICKER_RANGE = 0.4;
+const float FLICKER_OFFSET = 0.6;
 const float FLICKER_EXTRA_THRESHOLD = 0.98;
 const float FLICKER_EXTRA_INTENSITY = 0.5;
 
