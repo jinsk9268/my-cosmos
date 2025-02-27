@@ -1,5 +1,6 @@
 import { throwError, isNull } from "@/js/utils.js";
 import { SCREEN, ERROR_MSG } from "@/js/constants.js";
+import { useTextureStore } from "@/js/store.js";
 
 class CanvasOption {
 	/**
@@ -25,6 +26,9 @@ class CanvasOption {
 
 		this.canvas.style.width = `${this.canvasCssWidth}px`;
 		this.canvas.style.height = `${this.canvasCssHeight}px`;
+
+		const { setIsTabletOrSmaller } = useTextureStore.getState();
+		setIsTabletOrSmaller(innerWidth <= SCREEN.TABLET_OR_SMALLER);
 	}
 }
 

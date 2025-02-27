@@ -283,7 +283,10 @@ class ScreenEvent {
 
 		this.galaxyModel.rotateZ(0.1);
 
-		if (this.perspCamera.cameraPos[2] < PERSPECTIVE_CAMERA.EYE_END_Z) {
+		const endZValue = useTextureStore.getState().isTabletOrSmaller
+			? PERSPECTIVE_CAMERA.TABLET_END_Z
+			: PERSPECTIVE_CAMERA.EYE_END_Z;
+		if (this.perspCamera.cameraPos[2] < endZValue) {
 			this.perspCamera.updateZ(uTime);
 		}
 	}

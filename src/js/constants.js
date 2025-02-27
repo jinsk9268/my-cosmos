@@ -6,6 +6,7 @@ export const SCREEN = {
 	MAX_DPR: 3,
 	IOS: /Mac|iPhone|iPad|iPod/i,
 	RESIZE_DELAY: 200,
+	TABLET_OR_SMALLER: 768,
 };
 
 export const ANIMATION = {
@@ -27,6 +28,7 @@ export const PERSPECTIVE_CAMERA = {
 	FAR: 100,
 	EYE_START: [0, -25, 1],
 	EYE_END_Z: 25,
+	TABLET_END_Z: 50,
 	CENTER: [0, -2, 0],
 	UP: [0, 1, 0],
 	SPEED_RATE: 0.01,
