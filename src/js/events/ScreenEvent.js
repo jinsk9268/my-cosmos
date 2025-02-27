@@ -261,7 +261,7 @@ class ScreenEvent {
 		this.galaxyTexture.activeTexture2DArray(this.gl.TEXTURE0, u_textures, 0);
 
 		this.gl.enable(this.gl.BLEND);
-		this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
+		this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
 		this.gl.depthMask(false);
 
 		this.galaxyGL.bindAndDrawArrays({ module: this.gl.POINTS, count: this.galaxyShape.qty });
