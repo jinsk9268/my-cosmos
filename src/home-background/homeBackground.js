@@ -6,6 +6,7 @@ import starFragmentSource from "@/home-background/shaders/starFragmentShader.gls
 import auroraVertexSource from "@/home-background/shaders/auroraVertexShader.glsl";
 import auroraFragmentSource from "@/home-background/shaders/auroraFragmentShader.glsl";
 import GLPipeline from "@/js/gl/GLPipeline.js";
+import GLTexture from "@/js/gl/GLTexture.js";
 import { HOME_BACKGROUND, MSG } from "@/js/constants.js";
 import { isNull } from "@/js/utils.js";
 
@@ -28,6 +29,13 @@ auroraGL.setVertexArray({ location: auroraPositionLocation, size: 2, type: gl.FL
 
 // 오로라 유니폼
 const auroraUTimeLocation = auroraGL.getUniformLocation("u_time");
+const auroraUTextureLocation = auroraGL.getUniformLocation("u_texture");
+const auroraUResolution = auroraGL.getUniformLocation("u_resolution");
+
+// 오로라 텍스쳐 생성
+const auroraTexture = new GLTexture(gl);
+auroraTexture.createImageTexture("/my-cosmos/images/74.jpg");
+auroraTexture.activeTexture(gl.TEXTURE0, auroraUTextureLocation, 0);
 
 // 별 ---------------------
 const starGL = new GLPipeline(gl, starVertexSource, starFragmentSource);
@@ -59,6 +67,7 @@ gl.uniform3fv(starGL.getUniformLocation("u_colors"), STAR.U_COLORS);
 function renderAurora(uTime) {
 	auroraGL.useProgram();
 	gl.uniform1f(auroraUTimeLocation, uTime);
+	gl.uniform2f(auroraUResolution, gl.canvas.width, gl.canvas.height);
 
 	auroraGL.bindAndDrawArrays({ module: gl.TRIANGLE_STRIP, count: 4 });
 }

@@ -34,8 +34,8 @@ export const PERSPECTIVE_CAMERA = {
 	SPEED_RATE: 0.01,
 	ZOOM_NEAR: 1,
 	ZOOM_FAR: 50,
-	ZOOM_OFFSET: 1,
-	Z_SPEED_FACTOR: 0.0005,
+	ZOOM_OFFSET: 1.5,
+	Z_SPEED_FACTOR: 0.05,
 };
 
 export const MODEL = {
@@ -53,7 +53,7 @@ export const TEXTURE = {
 export const HOME_BACKGROUND = {
 	POS: numArrToF32Arr([-1, -1, 1, -1, -1, 1, 1, 1]), // 좌하, 우하, 좌상, 우상
 	STAR: {
-		QTY: 4000,
+		QTY: 5000,
 		THETA_OFFSET: 0.55,
 		RADIUS_MIN: 0,
 		RADIUS_SCALE: 2,
@@ -70,7 +70,7 @@ export const HOME_BACKGROUND = {
 };
 
 export const COMSMOS_BACKGROUND = {
-	STAR_QTY: 25000,
+	STAR_QTY: 30000,
 	POS: numArrToF32Arr([
 		// 앞쪽 (좌상, 우상, 좌하, 우하)
 		-1, 1, 1, 1, 1, 1, -1, -1, 1, 1, -1, 1,

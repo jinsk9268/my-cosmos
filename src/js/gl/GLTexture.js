@@ -8,6 +8,7 @@ class GLTexture {
 	constructor(gl) {
 		this.gl = gl;
 		this.glTextures = null;
+		this.imageTexture = null;
 	}
 
 	generateGLTexture2DArray() {
@@ -68,6 +69,45 @@ class GLTexture {
 		this.gl.activeTexture(textureUnit);
 		this.gl.bindTexture(this.gl.TEXTURE_2D_ARRAY, this.glTextures);
 		this.gl.uniform1i(location, unitNum);
+	}
+
+	createImageTexture(src) {
+		console.log(this.gl);
+		this.imageTexture = this.gl.createTexture();
+		this.gl.bindTexture(this.gl.TEXTURE_2D, this.imageTexture);
+
+		const img = new Image();
+		img.src = src;
+		img.onload = () => {
+			this.gl.bindTexture(this.gl.TEXTURE_2D, this.imageTexture);
+			this.gl.texImage2D(
+				this.gl.TEXTURE_2D,
+				0,
+				this.gl.RGBA8,
+				img.width,
+				img.height,
+				0,
+				this.gl.RGBA,
+				this.gl.UNSIGNED_BYTE,
+				img,
+			);
+			this.gl.generateMipmap(this.gl.TEXTURE_2D);
+		};
+
+		this.gl.texParameteri(
+			this.gl.TEXTURE_2D,
+			this.gl.TEXTURE_MIN_FILTER,
+			this.gl.LINEAR_MIPMAP_LINEAR,
+		);
+		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
+		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.MIRRORED_REPEAT);
+		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.MIRRORED_REPEAT);
+	}
+
+	activeTexture(texture, location, textureNum) {
+		this.gl.activeTexture(texture);
+		this.gl.bindTexture(this.gl.TEXTURE_2D, this.imageTexture);
+		this.gl.uniform1i(location, textureNum);
 	}
 }
 

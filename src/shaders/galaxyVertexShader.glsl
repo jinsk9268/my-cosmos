@@ -10,7 +10,7 @@ uniform float u_time;
 
 out float v_tex_idx;
 
-const float TIME_FACTOR = 45.0;
+const float TIME_FACTOR = 85.0;
 const float TIME_START = 0.0;
 const float TIME_END = 1.0;
 const float SPREAD_START = 6.0;
