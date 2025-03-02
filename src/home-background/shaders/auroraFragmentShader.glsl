@@ -11,8 +11,8 @@ uniform sampler2D u_texture;
 uniform vec2 u_resolution;
 uniform float u_time;
 
-const float COLOR_RANGE = 0.7;
-const float COLOR_OFFSET = 0.3;
+const float COLOR_RANGE = 0.5;
+const float COLOR_OFFSET = 0.5;
 const float NOISE_FACTOR = 1.1;
 const vec4 BACKGROUND_COLOR = vec4(0.0, 0.0, 0.0, 1.0);
 const float SMOOTH_MIN = -1.0;
@@ -36,6 +36,7 @@ void main() {
   vec4 base_background = BACKGROUND_COLOR;
   float weight = smoothstep(SMOOTH_MIN, SMOOTH_MAX, v_color.y);
   float weight_factor = sin(u_time * WEIGHT_TIME_SPEED) * WEIGHT_RANGE + WEIGHT_OFFSET;
+  float alpha = smoothstep(0.0, 3.0, u_time);
 
-  f_color = mix(base_background, color, weight * weight_factor);
+  f_color = mix(base_background, color, weight * weight_factor * alpha);
 }

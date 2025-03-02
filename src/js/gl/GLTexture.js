@@ -72,7 +72,6 @@ class GLTexture {
 	}
 
 	createImageTexture(src) {
-		console.log(this.gl);
 		this.imageTexture = this.gl.createTexture();
 		this.gl.bindTexture(this.gl.TEXTURE_2D, this.imageTexture);
 

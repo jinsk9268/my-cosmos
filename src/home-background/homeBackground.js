@@ -34,7 +34,7 @@ const auroraUResolution = auroraGL.getUniformLocation("u_resolution");
 
 // 오로라 텍스쳐 생성
 const auroraTexture = new GLTexture(gl);
-auroraTexture.createImageTexture("/my-cosmos/images/74.jpg");
+auroraTexture.createImageTexture("/my-cosmos/images/homr_texture.webp");
 auroraTexture.activeTexture(gl.TEXTURE0, auroraUTextureLocation, 0);
 
 // 별 ---------------------
