@@ -4,7 +4,7 @@ import { degreeToRadian } from "@/js/utils.js";
 // 공통 상수 ---------------------
 export const SCREEN = {
 	MAX_DPR: 3,
-	IOS: /Mac|iPhone|iPad|iPod/i,
+	I_PHONE: /iPhone/i,
 	RESIZE_DELAY: 200,
 	TABLET_OR_SMALLER: 768,
 };
@@ -26,7 +26,7 @@ export const PERSPECTIVE_CAMERA = {
 	FOV: degreeToRadian(60),
 	NEAR: 0.1,
 	FAR: 100,
-	EYE_START: [0, -25, 1],
+	EYE_START: [0, -20, 1],
 	EYE_END_Z: 25,
 	TABLET_END_Z: 50,
 	CENTER: [0, -2, 0],
@@ -53,7 +53,7 @@ export const TEXTURE = {
 export const HOME_BACKGROUND = {
 	POS: numArrToF32Arr([-1, -1, 1, -1, -1, 1, 1, 1]), // 좌하, 우하, 좌상, 우상
 	STAR: {
-		QTY: 5000,
+		QTY: 5500,
 		THETA_OFFSET: 0.55,
 		RADIUS_MIN: 0,
 		RADIUS_SCALE: 2,

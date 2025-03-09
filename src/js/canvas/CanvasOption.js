@@ -15,8 +15,8 @@ class CanvasOption {
 	}
 
 	initCanvasOptionSizeVars(width = innerWidth, height = innerHeight) {
-		const isIOS = SCREEN.IOS.test(navigator.userAgent) && navigator.maxTouchPoints > 0;
-		const bottomBarHeightDiff = isIOS
+		const isIPhone = SCREEN.I_PHONE.test(navigator.userAgent) && navigator.maxTouchPoints > 0;
+		const bottomBarHeightDiff = isIPhone
 			? document.documentElement.scrollHeight - visualViewport.height
 			: 0;
 
