@@ -5,10 +5,10 @@ out float v_brightness;
 
 uniform float u_time;
 
-const float BRIGHTNESS_BASE = 0.6;
+const float BRIGHTNESS_BASE = 0.7;
 const float INTENSITY = 70.0;
-const float MIN_POINT_SIZE = 0.8;
-const float MAX_SIZE_OFFSEST = 3.5;
+const float MIN_POINT_SIZE = 0.5;
+const float MAX_SIZE_OFFSEST = 2.5;
 
 void main() {
   v_brightness = BRIGHTNESS_BASE 
