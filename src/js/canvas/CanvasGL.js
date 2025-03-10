@@ -9,7 +9,7 @@ class CanvasGL extends CanvasOption {
 	 */
 	constructor(canvasId) {
 		super(canvasId);
-		this.gl = this.canvas.getContext("webgl2", { debug: true });
+		this.gl = this.canvas.getContext("webgl2");
 		if (isNull(this.gl)) throwError(ERROR_MSG.NO_WEBGL2);
 
 		this.gl.enable(this.gl.DEPTH_TEST);
