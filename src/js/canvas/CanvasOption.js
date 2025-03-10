@@ -8,12 +8,14 @@ class CanvasOption {
 	 * @param {string} canvasId
 	 */
 	constructor(canvasId = null) {
-		this.canvas = isNull(canvasId)
-			? document.createElement("canvas")
-			: document.getElementById(canvasId);
+		this.canvas = document.getElementById(canvasId);
 		if (isNull(this.canvas)) throwError(ERROR_MSG.NO_CANVAS);
 	}
 
+	/**
+	 * @param {number} [width]
+	 * @param {number} [height]
+	 */
 	initCanvasOptionSizeVars(width = innerWidth, height = innerHeight) {
 		const isIPhone = SCREEN.I_PHONE.test(navigator.userAgent) && navigator.maxTouchPoints > 0;
 		const bottomBarHeightDiff = isIPhone
