@@ -8,7 +8,9 @@ class CanvasOption {
 	 * @param {string} canvasId
 	 */
 	constructor(canvasId = null) {
-		this.canvas = document.getElementById(canvasId);
+		this.canvas = isNull(canvasId)
+			? document.createElement("canvas")
+			: document.getElementById(canvasId);
 		if (isNull(this.canvas)) throwError(ERROR_MSG.NO_CANVAS);
 	}
 
