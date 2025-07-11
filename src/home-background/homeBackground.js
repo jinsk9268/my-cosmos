@@ -7,7 +7,7 @@ import auroraVertexSource from "@/home-background/shaders/auroraVertexShader.gls
 import auroraFragmentSource from "@/home-background/shaders/auroraFragmentShader.glsl";
 import GLPipeline from "@/js/gl/GLPipeline.js";
 import GLTexture from "@/js/gl/GLTexture.js";
-import { HOME_BACKGROUND, MSG } from "@/js/constants.js";
+import { HOME_BACKGROUND, MSG, SCREEN } from "@/js/constants.js";
 import { isNull } from "@/js/utils.js";
 
 const { STAR } = HOME_BACKGROUND;
@@ -60,6 +60,7 @@ starGL.setVertexArray({ location: starPositionLocation, size: 3, type: gl.FLOAT 
 
 // 별 유니폼 ---------------------
 const starUTimeLocation = starGL.getUniformLocation("u_time");
+const isMobileULocation = starGL.getUniformLocation("u_is_mobile");
 gl.uniform3fv(starGL.getUniformLocation("u_colors"), STAR.U_COLORS);
 
 // 홈 배경화면 render ---------------------
@@ -76,6 +77,7 @@ function renderAurora(uTime) {
 function renderStar(uTime) {
 	starGL.useProgram();
 	gl.uniform1f(starUTimeLocation, uTime);
+	gl.uniform1i(isMobileULocation, SCREEN.MOBILE.test(navigator.userAgent) ? 1 : 0);
 
 	starGL.bindAndDrawArrays({ module: gl.POINTS, count: STAR.QTY });
 }

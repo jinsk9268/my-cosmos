@@ -72,7 +72,7 @@ class CameraEvent {
 		this.cosmosCanvas.addEventListener("mousedown", this.handleMousedown.bind(this));
 		this.cosmosCanvas.addEventListener("mousemove", (e) => this.handleMousemove(e));
 		this.cosmosCanvas.addEventListener("mouseup", this.handleMouseup.bind(this));
-		this.cosmosCanvas.addEventListener("wheel", (e) => this.zoomZ(e.deltaZ));
+		this.cosmosCanvas.addEventListener("wheel", (e) => this.camera.zoomZ(e.deltaZ));
 
 		// 카메라 관련 이벤트 (터치)
 		this.cosmosCanvas.addEventListener("touchmove", (e) => this.handleTouchmove(e), {

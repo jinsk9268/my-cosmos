@@ -69,6 +69,7 @@ class ScreenEvent {
 				"u_view_without_translate_mat",
 			),
 			u_time: this.cosmosGL.getUniformLocation("u_time"),
+			u_is_mobile: this.cosmosGL.getUniformLocation("u_is_mobile"),
 		};
 	}
 
@@ -230,13 +231,14 @@ class ScreenEvent {
 	 * @param {number} uTime
 	 */
 	renderBackground(uTime) {
-		const { u_projection_mat, u_view_without_translate_mat, u_time } = this.cosmosUniformLoc;
+		const { u_projection_mat, u_view_without_translate_mat, u_time, u_is_mobile } = this.cosmosUniformLoc;
 		const { projectionMatrix, viewWithoutTranslateMatrix } = this.perspCamera;
 
 		this.cosmosGL.useProgram();
 		this.gl.uniformMatrix4fv(u_projection_mat, false, projectionMatrix);
 		this.gl.uniformMatrix4fv(u_view_without_translate_mat, false, viewWithoutTranslateMatrix);
 		this.gl.uniform1f(u_time, uTime);
+		this.gl.uniform1i(u_is_mobile, SCREEN.MOBILE.test(navigator.userAgent) ? 1 : 0);
 		this.cosmosGL.bindAndDrawArrays({
 			module: this.gl.POINTS,
 			count: COMSMOS_BACKGROUND.STAR_QTY,

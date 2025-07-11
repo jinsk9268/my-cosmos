@@ -5,6 +5,7 @@ import { degreeToRadian } from "@/js/utils.js";
 export const SCREEN = {
 	MAX_DPR: 3,
 	I_PHONE: /iPhone/i,
+	MOBILE: /Mobile|Android|iPhone|iPad/i,
 	RESIZE_DELAY: 200,
 	TABLET_OR_SMALLER: 768,
 };
