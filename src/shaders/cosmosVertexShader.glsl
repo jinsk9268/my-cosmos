@@ -9,7 +9,7 @@ uniform float u_time;
 const vec3 RANDOM_SEED = vec3(12.9898, 78.233, 54.53);
 const float RANDOM_FACTOR = 43758.5453;
 const float STAR_MIN_SIZE = 0.5;
-const float STAR_MAX_SIZE = 2.0;
+const float STAR_MAX_SIZE = 1.5;
 const float SPEED_FACTOR = 0.5;
 const float FLICKER_NOISE_SCALE = 60.0;
 const float PI = 3.14159265359;
