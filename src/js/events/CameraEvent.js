@@ -57,7 +57,7 @@ class CameraEvent {
 			this.prevTouch.x = clientX;
 			this.prevTouch.y = clientY;
 		} else if (touchPoint === 2) {
-			e.preventDefault(); // 브라우저 확대 축소 방지
+			// e.preventDefault(); // 브라우저 확대 축소 방지
 			const [touch1, touch2] = e.touches;
 			const currentDist = Math.hypot(
 				touch2.clientX - touch1.clientX,
@@ -71,7 +71,7 @@ class CameraEvent {
 
 			this.prevTouchDistance = currentDist;
 		}
-		this.camera.lookAt();
+		// this.camera.lookAt();
 	}
 
 	handleTouchend() {
