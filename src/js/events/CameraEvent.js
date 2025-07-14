@@ -14,6 +14,7 @@ class CameraEvent {
 
 	initCameraVars() {
 		this.isDrag = false;
+		this.isTouch = false;
 		this.prevTouch = { x: 0, y: 0 };
 		this.prevTouchDistance = 0;
 	}
@@ -35,10 +36,16 @@ class CameraEvent {
 		this.isDrag = false;
 	}
 
+	handleTouchstart() {
+		this.isTouch = true;
+	}
+
 	/**
 	 * @param {TouchEvent} e
 	 */
 	handleTouchmove(e) {
+		if(!this.isTouch) return ;
+
 		const touchPoint = e.touches.length;
 
 		if (touchPoint === 1) {
@@ -67,6 +74,12 @@ class CameraEvent {
 		this.camera.lookAt();
 	}
 
+	handleTouchend() {
+		this.isTouch = false;
+		this.prevTouch.x = 0;
+		this.prevTouch.y = 0;
+	}
+
 	addEventListeners() {
 		// 카메라 관련 이벤트 (마우스)
 		this.cosmosCanvas.addEventListener("mousedown", this.handleMousedown.bind(this));
@@ -75,9 +88,9 @@ class CameraEvent {
 		this.cosmosCanvas.addEventListener("wheel", (e) => this.camera.zoomZ(e.deltaZ));
 
 		// 카메라 관련 이벤트 (터치)
-		this.cosmosCanvas.addEventListener("touchmove", (e) => this.handleTouchmove(e), {
-			passive: false,
-		});
+		this.cosmosCanvas.addEventListener("touchstart", this.handleTouchstart.bind(this), { passive: false })
+		this.cosmosCanvas.addEventListener("touchmove", (e) => this.handleTouchmove(e), { passive: false });
+		this.cosmosCanvas.addEventListener("touchend", this.handleTouchend.bind(this), { passive: false })
 	}
 }
 
