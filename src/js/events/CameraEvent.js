@@ -61,7 +61,7 @@ class CameraEvent {
 			const [touch1, touch2] = e.touches;
 			const currentDist = Math.hypot(
 				touch2.clientX - touch1.clientX,
-				touch2.clientY - touch2.clientY,
+				touch2.clientY - touch1.clientY,
 			);
 
 			if (this.prevTouchDistance) {
